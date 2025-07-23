@@ -65,9 +65,9 @@ A standalone web application that provides the visual interface for theme creati
 - Theme templates and presets
 - Export to multiple formats
 
-### 3. 🔌 Injector Script (`/packages/injector`)
+### 3. �️ Weaver Script (`/packages/weaver`)
 
-A lightweight script that connects your application with the theme designer.
+A lightweight script that weaves themes seamlessly into your application.
 
 **Key Features:**
 
@@ -116,7 +116,7 @@ skin-walker/
 ├── packages/
 │   ├── sdk/              # Core vanilla JS SDK
 │   ├── designer/         # Theme designer application
-│   └── injector/         # Injector script
+│   └── weaver/           # Weaver script
 ├── examples/             # Basic integration examples
 └── docs/                 # Documentation
 ```

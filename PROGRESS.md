@@ -4,32 +4,51 @@
 
 ## 🎯 Project Overview
 
-**Goal:** Create a comprehensive toolkit for adding interactive theme designers to any web application.
+**Goal:** Create### 🔧 SDK Package (`@skin-walker/sdk`)
+
+- **Status:** Started - Basic Structure
+- **Progress:** 10%
+- **Technology:** Vanilla TypeScript (compiles to JavaScript)
+- **Next Steps:** Setup TypeScript configuration and core type definitions
+
+### 🧶 Loomer Package (`@skin-walker/loomer`)
+
+- **Status:** Started - SvelteKit Setup Complete
+- **Progress:** 25%
+- **Technology:** SvelteKit static application
+- **Next Steps:** Begin UI/UX design and theme designer components
+
+### 🕸️ Weaver Package (`@skin-walker/weaver`)
+
+- **Status:** Started - Basic Structure
+- **Progress:** 10%
+- **Technology:** Vanilla TypeScript (compiles to JavaScript)
+- **Next Steps:** Setup TypeScript configuration and cross-origin communication researchlkit for adding interactive theme designers to any web application.
 
 **Timeline:** Q3-Q4 2025  
 **Status:** 🚧 In Development  
 **Version:** 0.1.0-alpha
 
-## 📈 Overall Progress: 0% Complete
+## 📈 Overall Progress: 15% Complete
 
 ```
-[□□□□□□□□□□] 0/10 major milestones
+[■■□□□□□□□□] 2/10 major milestones
 ```
 
 ## 🗺️ Development Roadmap
 
-### Phase 1: Foundation & Core SDK (0% Complete)
+### Phase 1: Foundation & Core SDK (15% Complete)
 
 **Timeline:** July - August 2025
 
 - [ ] **Project Setup & Architecture**
 
-  - [ ] Initialize project structure
-  - [ ] Setup TypeScript configuration for SDK and injector
-  - [ ] Setup SvelteKit project for designer
+  - [x] Initialize project structure
+  - [ ] Setup TypeScript configuration for SDK and weaver
+  - [x] Setup SvelteKit project for designer (Loomer)
   - [ ] Configure build tools for each package
   - [ ] Setup testing framework (Vitest)
-  - [ ] Configure linting and formatting (ESLint + Prettier)
+  - [x] Configure linting and formatting (ESLint + Prettier) - Done for Loomer
   - [ ] Setup CI/CD pipeline
 
 - [ ] **Core SDK Development** (`/packages/sdk`)
@@ -50,11 +69,11 @@
   - [ ] Browser compatibility testing
   - [ ] Performance benchmarks
 
-### Phase 2: Injector Script (0% Complete)
+### Phase 2: Weaver Script (10% Complete)
 
 **Timeline:** August 2025
 
-- [ ] **Injector Development** (`/packages/injector`)
+- [ ] **Weaver Development** (`/packages/weaver`)
 
   - [ ] Vanilla TypeScript project setup
   - [ ] Lightweight initialization script
@@ -71,21 +90,21 @@
   - [ ] Debug mode and logging
   - [ ] Hot-reload capabilities
 
-### Phase 3: Theme Designer Application (0% Complete)
+### Phase 3: Theme Loomer Application (25% Complete)
 
 **Timeline:** September 2025
 
-- [ ] **Designer UI/UX** (`/packages/designer`)
+- [x] **Loomer UI/UX** (`/loomer`)
 
-  - [ ] SvelteKit static application setup
-  - [ ] Modern responsive design system
+  - [x] SvelteKit static application setup
+  - [x] Modern responsive design system (ESLint + Prettier configured)
   - [ ] Color picker with accessibility validation
   - [ ] Typography controls
   - [ ] Spacing and layout tools
   - [ ] Component preview system
   - [ ] Static site generation configuration
 
-- [ ] **Designer Features**
+- [ ] **Loomer Features**
 
   - [ ] Real-time preview functionality
   - [ ] Theme templates and presets
@@ -165,7 +184,7 @@
 - **Technology:** SvelteKit static application
 - **Next Steps:** Setup SvelteKit project and plan UI/UX design
 
-### 🔌 Injector Package (`@skin-walker/injector`)
+### �️ Weaver Package (`@skin-walker/weaver`)
 
 - **Status:** Not Started
 - **Progress:** 0%
@@ -180,11 +199,11 @@
 
 **Goals:**
 
-1. [ ] Setup project structure
-2. [ ] Initialize all package directories
-3. [ ] Configure TypeScript for SDK and injector packages
-4. [ ] Setup SvelteKit for designer package
-5. [ ] Create package.json files for each package
+1. [x] Setup project structure
+2. [x] Initialize all package directories
+3. [ ] Configure TypeScript for SDK and weaver packages
+4. [x] Setup SvelteKit for designer package (Loomer)
+5. [x] Create package.json files for each package
 6. [ ] Initialize git repository and CI/CD
 
 **Blockers:** None identified
@@ -192,7 +211,7 @@
 **Risks:**
 
 - Choosing the right build tools for optimal bundle sizes
-- Ensuring TypeScript configuration works for SDK and injector packages
+- Ensuring TypeScript configuration works for SDK and weaver packages
 - Setting up proper build pipeline for SvelteKit designer
 
 ## 📊 Metrics & KPIs
@@ -201,14 +220,14 @@
 
 - **Lines of Code:** 0
 - **Test Coverage:** N/A
-- **Package Count:** 0/3
+- **Package Count:** 3/3 (All initialized)
 - **Example Count:** 0/2
 - **Documentation Pages:** 0
 
 ### Performance Targets
 
 - **SDK Bundle Size:** < 50KB gzipped
-- **Injector Bundle Size:** < 10KB gzipped
+- **Weaver Bundle Size:** < 10KB gzipped
 - **Designer Load Time:** < 2 seconds
 - **Theme Apply Time:** < 100ms
 
@@ -225,7 +244,13 @@
 
 - ✅ Created project README.md
 - ✅ Created progress tracking document
-- 🎯 **Next:** Initialize project structure
+- ✅ Renamed "Injector" to "Weaver"
+- ✅ Renamed "Designer" to "Loomer"
+- ✅ Initialized project structure with placeholder packages
+- ✅ Created Loomer (SvelteKit application with full configuration)
+- ✅ Created SDK (basic npm package structure)
+- ✅ Created Weaver (basic npm package structure)
+- 🎯 **Next:** Setup TypeScript configurations for SDK and Weaver
 
 ## 🚧 Known Issues & Blockers
 
@@ -255,9 +280,9 @@
 ### Architecture Decisions
 
 - **Project Structure:** Standard project with separate packages
-- **TypeScript:** Vanilla TypeScript for SDK and injector packages
+- **TypeScript:** Vanilla TypeScript for SDK and weaver packages
 - **SvelteKit:** Static application for the theme designer
-- **Build Tools:** TypeScript compiler for SDK/injector, SvelteKit for designer
+- **Build Tools:** TypeScript compiler for SDK/weaver, SvelteKit for designer
 - **Testing:** Vitest for unit tests, Playwright for E2E
 
 ### Design Decisions
