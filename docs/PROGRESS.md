@@ -24,19 +24,27 @@
 
 ### 🕸️ Weaver Package (`@skin-walker/weaver`)
 
-- **Status:** Setup Complete - TypeScript Build Ready
-- **Progress:** 40%
+- **Status:** Core Implementation Complete
+- **Progress:** 75%
 - **Technology:** Vanilla TypeScript with Rollup bundling
-- **Next Steps:** Implement core weaver functionality and cross-origin communicationlkit for adding interactive theme designers to any web application.
+- **Key Features Implemented:**
+  - PostMessage API communication protocol
+  - CSS variable auto-detection (including shadow DOM)
+  - Mutation observer for dynamic content tracking
+  - Type-safe message handling with validation
+  - Comprehensive error handling and logging
+- **Next Steps:** Theme persistence layer and performance optimization
+
+**Goal:** Create a comprehensive toolkit for adding interactive theme designers to any web application.
 
 **Timeline:** Q3-Q4 2025  
 **Status:** 🚧 In Development  
 **Version:** 0.1.0-alpha
 
-## 📈 Overall Progress: 25% Complete
+## 📈 Overall Progress: 35% Complete
 
 ```
-[■■■□□□□□□□] 3/10 major milestones
+[■■■■□□□□□□] 4/10 major milestones
 ```
 
 ## 🗺️ Development Roadmap
@@ -73,7 +81,7 @@
   - [ ] Browser compatibility testing
   - [ ] Performance benchmarks
 
-### Phase 2: Weaver Script (40% Complete)
+### Phase 2: Weaver Script (75% Complete)
 
 **Timeline:** August 2025
 
@@ -82,17 +90,19 @@
   - [x] Vanilla TypeScript project setup
   - [x] TypeScript configuration and build setup (Rollup)
   - [x] ESLint and Prettier configuration
-  - [ ] Lightweight initialization script
-  - [ ] CSS variable auto-detection
-  - [ ] Cross-origin communication setup
+  - [x] Lightweight initialization script (`index.ts` with DOM ready handling)
+  - [x] CSS variable auto-detection (comprehensive scraping including shadow DOM)
+  - [x] Cross-origin communication setup (PostMessage API with structured protocol)
+  - [x] Type definitions and decoders (`types.ts`, `decoders.ts`)
+  - [x] Error handling and fallbacks
   - [ ] Theme persistence layer
-  - [ ] Error handling and fallbacks
   - [ ] Performance optimization
 
-- [ ] **Integration Features**
-  - [ ] Framework-agnostic integration
+- [x] **Integration Features**
+  - [x] Framework-agnostic integration (vanilla TypeScript)
+  - [x] Mutation observer for dynamic content changes
+  - [x] Debug mode and logging (comprehensive console logging)
   - [ ] Configuration options
-  - [ ] Debug mode and logging
   - [ ] Hot-reload capabilities
 
 ### Phase 3: Theme Loomer Application (25% Complete)
@@ -177,24 +187,30 @@
 
 ### 🔧 SDK Package (`@skin-walker/sdk`)
 
-- **Status:** Not Started
-- **Progress:** 0%
+- **Status:** Basic Structure Only
+- **Progress:** 10%
 - **Technology:** Vanilla TypeScript (compiles to JavaScript)
-- **Next Steps:** Initialize TypeScript project structure and core interfaces
+- **Next Steps:** Core interface definitions and theme validation logic
 
-### 🎨 Designer Package (`@skin-walker/designer`)
+### 🧶 Loomer Package (`@skin-walker/loomer`)
 
-- **Status:** Not Started
-- **Progress:** 0%
+- **Status:** SvelteKit Setup Complete
+- **Progress:** 25%
 - **Technology:** SvelteKit static application
-- **Next Steps:** Setup SvelteKit project and plan UI/UX design
+- **Next Steps:** Begin UI/UX design and theme designer components
 
-### �️ Weaver Package (`@skin-walker/weaver`)
+### 🕸️ Weaver Package (`@skin-walker/weaver`)
 
-- **Status:** Not Started
-- **Progress:** 0%
-- **Technology:** Vanilla TypeScript (compiles to JavaScript)
-- **Next Steps:** Research cross-origin communication patterns
+- **Status:** Core Implementation Complete
+- **Progress:** 75%
+- **Technology:** Vanilla TypeScript with Rollup bundling
+- **Features Complete:**
+  - CSS variable auto-detection with shadow DOM support
+  - PostMessage API communication protocol
+  - Mutation observer for dynamic content tracking
+  - Type-safe message handling and validation
+  - Comprehensive error handling and logging
+- **Next Steps:** Theme persistence layer and performance optimization
 
 ## 🎯 Current Sprint Goals
 
@@ -256,7 +272,17 @@
 - ✅ Created SDK (basic npm package structure)
 - ✅ Created Weaver (TypeScript + Rollup setup with ESLint & Prettier)
 - ✅ Setup TypeScript configurations for Weaver
-- 🎯 **Next:** Begin core weaver functionality implementation
+
+### Recent Progress (Current)
+
+- ✅ **Weaver Core Implementation:** Complete PostMessage communication system
+- ✅ **CSS Variable Detection:** Comprehensive scraping including shadow DOM support
+- ✅ **Type Safety:** Full TypeScript definitions and runtime validation
+- ✅ **Mutation Observer:** Dynamic content change tracking
+- ✅ **Error Handling:** Robust error handling with detailed logging
+- ✅ **Project Structure:** Moved all packages to `/packages/` directory
+- ✅ **Build Configuration:** Updated .gitignore for new structure
+- 🎯 **Next:** SDK core interface development and theme persistence layer
 
 ## 🚧 Known Issues & Blockers
 
