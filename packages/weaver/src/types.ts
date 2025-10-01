@@ -1,28 +1,27 @@
-export interface CSSProperty {
+export type CSSProperty = {
   property: string;
   value: string;
-}
+};
 
-export interface DocumentHost {
+export type DocumentHost = {
   name: string;
   target: DocumentLike;
-}
+};
 
 export type DocumentLike = Document | ShadowRoot;
 
 export type HostStyles = Map<string, Array<CSSProperty>>;
 
-export interface SDKPayload {
+export type SDKPayload = {
   requestId: string;
   service: string;
-  payload: {
-    action: string;
-    [key: string]: unknown;
-  };
-}
+  payload: SDKPayloadPayload;
+};
 
-export interface SDKResponse {
+export type SDKPayloadPayload = Record<string, unknown>;
+
+export type SDKResponse = {
   requestId: string;
   service: string;
   payload: Record<string, unknown>;
-}
+};

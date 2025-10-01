@@ -22,8 +22,8 @@ npm-debug.log*
 /.svelte-kit
 
 # Build outputs
-**/build/
-**/dist/*
+packages/**/build/
+packages/**/dist/
 *.js.map
 
 # Turborepo

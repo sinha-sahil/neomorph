@@ -1,4 +1,5 @@
-import { SDKPayload } from './types';
+import { decodeString, isJSON } from 'type-decoder';
+import { SDKPayload, SDKPayloadPayload } from './types';
 
 export function safeParseJson(jsonString: string): unknown {
   try {
@@ -8,18 +9,27 @@ export function safeParseJson(jsonString: string): unknown {
   }
 }
 
-export function decodeSDKPayload(payload: unknown): SDKPayload | null {
-  if (
-    typeof payload === 'object' &&
-    payload !== null &&
-    'requestId' in payload &&
-    'service' in payload &&
-    'payload' in payload &&
-    typeof (payload as any).requestId === 'string' &&
-    typeof (payload as any).service === 'string' &&
-    typeof (payload as any).payload === 'object'
-  ) {
-    return payload as SDKPayload;
+export function decodeSDKPayload(rawInput: unknown): SDKPayload | null {
+  if (isJSON(rawInput)) {
+    const decodedRequestId = decodeString(rawInput['requestId']);
+    const decodedService = decodeString(rawInput['service']);
+    const decodedPayload = decodeSDKPayloadPayload(rawInput['payload']);
+    if (decodedRequestId !== null && decodedService !== null && decodedPayload !== null) {
+      return {
+        requestId: decodedRequestId,
+        service: decodedService,
+        payload: decodedPayload
+      };
+    }
+  }
+  return null;
+}
+
+export function decodeSDKPayloadPayload(rawInput: unknown): SDKPayloadPayload | null {
+  if (isJSON(rawInput)) {
+    return {
+      ...rawInput
+    };
   }
   return null;
 }
