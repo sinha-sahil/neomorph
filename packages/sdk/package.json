@@ -1,0 +1,45 @@
+{
+  "name": "skin-walker-sdk",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "dev": "rollup -c rollup.config.js --watch",
+    "build": "rollup --config rollup.config.js",
+    "format": "npx prettier --write .",
+    "lint": "prettier --plugin-search-dir . --check . && eslint .",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [],
+  "author": "Sahil Sinha",
+  "license": "ISC",
+  "packageManager": "pnpm@10.5.2",
+  "dependencies": {
+    "type-decoder": "^2.1.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.36.0",
+    "@rollup/plugin-alias": "^5.1.1",
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.4",
+    "@typescript-eslint/eslint-plugin": "^8.44.0",
+    "@typescript-eslint/parser": "^8.44.0",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.6.2",
+    "rollup": "^4.52.0",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.2"
+  }
+}

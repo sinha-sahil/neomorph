@@ -1,0 +1,25 @@
+{
+  "name": "skin-walker",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Interactive theme designer toolkit for web applications",
+  "type": "module",
+  "packageManager": "pnpm@10.5.2",
+  "scripts": {
+    "build:all": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "turbo format",
+    "check": "turbo check",
+    "clean": "turbo clean",
+    "build:loomer": "turbo build --filter=loomer",
+    "build:weaver": "turbo build --filter=weaver",
+    "build:sdk": "turbo build --filter=sdk",
+    "dev:loomer": "turbo dev --filter=loomer",
+    "dev:weaver": "turbo dev --filter=weaver",
+    "dev:sdk": "turbo dev --filter=sdk"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3"
+  }
+}
