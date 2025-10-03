@@ -1,7 +1,7 @@
 {
   "name": "@neomorph/sdk",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Core SDK for Neomorph - Advanced theme generator toolkit for web applications",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
