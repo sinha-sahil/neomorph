@@ -1,8 +1,8 @@
 {
-  "name": "skin-walker",
+  "name": "neomorph",
   "private": true,
   "version": "0.0.1",
-  "description": "Interactive theme designer toolkit for web applications",
+  "description": "Advanced theme transformation toolkit for web applications",
   "type": "module",
   "packageManager": "pnpm@10.18.0",
   "scripts": {

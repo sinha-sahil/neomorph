@@ -1,8 +1,8 @@
 {
-  "name": "@skinwalker/sdk",
+  "name": "@neomorph/sdk",
   "type": "module",
   "version": "0.0.0",
-  "description": "Core SDK for Skin Walker - Interactive theme designer toolkit for web applications",
+  "description": "Core SDK for Neomorph - Advanced theme generator toolkit for web applications",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -22,25 +22,25 @@
     "clean": "rm -rf dist"
   },
   "keywords": [
+    "neomorph",
     "theme",
     "css-variables",
-    "customization",
+    "transformation",
     "ui",
     "design-system",
     "theming",
-    "sdk",
-    "@skinwalker/sdk"
+    "sdk"
   ],
   "author": "Sahil Sinha",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sinha-sahil/skin-walker.git",
+    "url": "git+https://github.com/sinha-sahil/neomorph.git",
     "directory": "packages/sdk"
   },
-  "homepage": "https://github.com/sinha-sahil/skin-walker#readme",
+  "homepage": "https://github.com/sinha-sahil/neomorph#readme",
   "bugs": {
-    "url": "https://github.com/sinha-sahil/skin-walker/issues"
+    "url": "https://github.com/sinha-sahil/neomorph/issues"
   },
   "publishConfig": {
     "access": "public"

@@ -1,5 +1,5 @@
 {
-	"name": "@skinwalker/loomer",
+	"name": "@neomorph/loomer",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
@@ -15,7 +15,7 @@
 		"clean": "rm -rf .svelte-kit dist"
 	},
 	"dependencies": {
-		"@skinwalker/sdk": "workspace:*"
+		"@neomorph/sdk": "workspace:*"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",

@@ -40,6 +40,10 @@ jobs:
       needs.detect-changes.outputs.loomer-changed == 'true'
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      pull-requests: write
     environment: publish-env
 
     steps:
@@ -123,10 +127,16 @@ jobs:
           echo "Updated package.json version:"
           node -p "require('./package.json').version"
 
-          # Publish with explicit registry and access
-          npm publish --access public --registry https://registry.npmjs.org
-
-          echo "SDK_PUBLISHED=true" >> $GITHUB_ENV
+          # Check if version already exists on npm
+          if npm view @neomorph/sdk@$NEW_VERSION version 2>/dev/null; then
+            echo "Version $NEW_VERSION already exists on npm, skipping publish"
+            echo "SDK_PUBLISHED=false" >> $GITHUB_ENV
+          else
+            echo "Publishing new version $NEW_VERSION to npm"
+            # Publish with explicit registry and access
+            npm publish --access public --registry https://registry.npmjs.org
+            echo "SDK_PUBLISHED=true" >> $GITHUB_ENV
+          fi
 
       # Weaver Package Build and Version Update
       - name: Build and version Weaver
@@ -184,10 +194,12 @@ jobs:
         run: |
           TAGS_TO_CREATE=""
 
-          # Add version changes to git
+          # Add version changes to git and create tags only for successfully published packages
           if [[ "${{ env.SDK_PUBLISHED }}" == "true" ]]; then
             git add packages/sdk/package.json
             TAGS_TO_CREATE="$TAGS_TO_CREATE sdk/${{ env.SDK_NEW_VERSION }}"
+          elif [[ "${{ env.SDK_PUBLISHED }}" == "false" ]]; then
+            echo "Skipping SDK tag creation - version already exists on npm"
           fi
 
           if [[ "${{ env.WEAVER_BUILT }}" == "true" ]]; then

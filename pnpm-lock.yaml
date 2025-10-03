@@ -14,7 +14,7 @@ importers:
 
   packages/loomer:
     dependencies:
-      '@skinwalker/sdk':
+      '@neomorph/sdk':
         specifier: workspace:*
         version: link:../sdk
     devDependencies:

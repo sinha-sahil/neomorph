@@ -1,8 +1,8 @@
 {
-  "name": "@skinwalker/weaver",
+  "name": "@neomorph/weaver",
   "type": "module",
   "version": "1.0.0",
-  "description": "Integration script for Skin Walker - Enables cross-origin communication and CSS variable scraping",
+  "description": "Integration script for Neomorph - Enables cross-origin communication and CSS variable transformation",
   "main": "index.js",
   "scripts": {
     "dev": "rollup -c rollup.config.js --watch",
@@ -11,9 +11,18 @@
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
     "clean": "rm -rf dist"
   },
-  "keywords": ["theme", "css-variables", "integration", "postmessage", "cross-origin", "weaver"],
+  "keywords": ["neomorph", "theme", "css-variables", "integration", "postmessage", "cross-origin", "transformation"],
   "author": "Sahil Sinha",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sinha-sahil/neomorph.git",
+    "directory": "packages/weaver"
+  },
+  "homepage": "https://github.com/sinha-sahil/neomorph#readme",
+  "bugs": {
+    "url": "https://github.com/sinha-sahil/neomorph/issues"
+  },
   "packageManager": "pnpm@10.18.0",
   "dependencies": {
     "type-decoder": "^2.1.0"

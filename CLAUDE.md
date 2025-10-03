@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Skin Walker is an interactive theme designer toolkit that enables developers to add theme customization capabilities to web applications. The project consists of three main packages working together to provide a complete theming solution based on CSS custom properties.
+Neomorph is an advanced theme transformation toolkit that enables developers to add sophisticated theme customization capabilities to web applications. The project consists of three main packages working together to provide a complete theme transformation solution based on CSS custom properties.
 
 **Prerequisites:** Applications must use CSS custom properties (CSS variables) for theming.
 
@@ -42,9 +42,9 @@ This is a monorepo with three distinct packages:
   - Minimal performance impact
   - Mutation observer for dynamic content changes
 
-### 3. SDK (`/packages/sdk`) - Core API
+### 3. SDK (`@neomorph/sdk`) - Core API
 - **Technology:** Vanilla TypeScript with Rollup bundling (framework-agnostic)
-- **Purpose:** Core theme management and validation APIs
+- **Purpose:** Core theme transformation and validation APIs
 - **Key Features Implemented:**
   - Complete TypeScript type definitions and runtime validation
   - Loomer class for iframe management and PostMessage communication

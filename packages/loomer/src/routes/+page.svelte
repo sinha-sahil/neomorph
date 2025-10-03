@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { browser } from '$app/environment';
-	import type { SDKResponse } from 'skin-walker-sdk';
+	import type { SDKResponse } from '@neomorph/sdk';
 
 	let weaver: any;
 	let cssVariables: SDKResponse | null = null;
@@ -10,7 +10,7 @@
 
 	onMount(async () => {
 		if (browser) {
-			const { Weaver } = await import('skin-walker-sdk');
+			const { Weaver } = await import('@neomorph/sdk');
 			appUrl = $page.url.searchParams.get('appUrl') || 'https://eldotto.myshopify.com/';
 			weaver = new Weaver();
 

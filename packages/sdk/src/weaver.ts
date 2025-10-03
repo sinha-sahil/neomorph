@@ -7,7 +7,7 @@ export class Weaver {
 
     try {
       const script = document.createElement("script");
-      script.src = `https://cdn.jsdelivr.net/gh/sinha-sahil/skin-walker/build/weaver/${version}/index.js`;
+      script.src = `https://cdn.jsdelivr.net/gh/sinha-sahil/neomorph/build/weaver/${version}/index.js`;
       script.type = "text/javascript";
       document.head.appendChild(script);
     } catch (error: unknown) {

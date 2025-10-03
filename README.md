@@ -1,8 +1,8 @@
-# 🎨 Skin Walker - Interactive Theme Designer
+# 🔮 Neomorph - Advanced Theme Transformation Toolkit
 
-> A complete toolkit for building interactive theme designers for any web application
+> A complete ecosystem for building sophisticated theme transformation capabilities in web applications
 
-Skin Walker is a comprehensive solution that enables developers to quickly add theme customization capabilities to their web applications. With just a few lines of code, users can design, preview, and apply custom themes in real-time.
+Neomorph is a comprehensive solution that enables developers to quickly add advanced theme customization and transformation capabilities to their web applications. With just a few lines of code, users can design, preview, and apply dynamic themes in real-time.
 
 ## 🚀 Features
 
@@ -40,9 +40,9 @@ Your web application must use CSS custom properties (CSS variables) for theming.
 
 The project consists of three main components:
 
-### 1. 📦 SDK (`/packages/sdk`)
+### 1. 📦 SDK (`@neomorph/sdk`)
 
-The core JavaScript SDK that provides APIs for theme management and integration.
+The core JavaScript SDK that provides APIs for advanced theme transformation and management.
 
 **Key Features:**
 
@@ -52,9 +52,9 @@ The core JavaScript SDK that provides APIs for theme management and integration.
 - Export/import functionality
 - Framework-agnostic design
 
-### 2. 🎨 Theme Designer (`/packages/designer`)
+### 2. 🎨 Loomer (`@neomorph/loomer`)
 
-A standalone web application that provides the visual interface for theme creation.
+A sophisticated web application that provides the visual interface for dynamic theme creation and transformation.
 
 **Key Features:**
 
@@ -65,9 +65,9 @@ A standalone web application that provides the visual interface for theme creati
 - Theme templates and presets
 - Export to multiple formats
 
-### 3. �️ Weaver Script (`/packages/weaver`)
+### 3. 🕷️ Weaver (`@neomorph/weaver`)
 
-A lightweight script that weaves themes seamlessly into your application.
+A lightweight integration script that weaves theme transformations seamlessly into your application.
 
 **Key Features:**
 
@@ -103,8 +103,8 @@ A lightweight script that weaves themes seamlessly into your application.
 
 ```bash
 # Clone the repository
-git clone https://github.com/sinha-sahil/skin-walker.git
-cd skin-walker
+git clone https://github.com/sinha-sahil/neomorph.git
+cd neomorph
 
 # Setup instructions coming soon...
 ```
@@ -112,12 +112,12 @@ cd skin-walker
 ### Project Structure
 
 ```
-skin-walker/
+neomorph/
 ├── packages/
-│   ├── sdk/              # Core vanilla JS SDK
-│   ├── designer/         # Theme designer application
-│   └── weaver/           # Weaver script
-├── examples/             # Basic integration examples
+│   ├── sdk/              # @neomorph/sdk - Core transformation SDK
+│   ├── loomer/           # @neomorph/loomer - Theme designer UI
+│   └── weaver/           # @neomorph/weaver - Integration script
+├── examples/             # Integration examples
 └── docs/                 # Documentation
 ```
 
