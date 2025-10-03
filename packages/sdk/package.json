@@ -12,7 +12,8 @@
     }
   },
   "files": [
-    "dist/"
+    "dist/",
+    "README.md"
   ],
   "scripts": {
     "dev": "rollup -c rollup.config.js --watch",
