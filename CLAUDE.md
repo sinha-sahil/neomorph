@@ -43,15 +43,20 @@ This is a monorepo with three distinct packages:
   - Mutation observer for dynamic content changes
 
 ### 3. SDK (`/packages/sdk`) - Core API
-- **Technology:** Vanilla TypeScript (framework-agnostic)
+- **Technology:** Vanilla TypeScript with Rollup bundling (framework-agnostic)
 - **Purpose:** Core theme management and validation APIs
+- **Key Features Implemented:**
+  - Complete TypeScript type definitions and runtime validation
+  - Loomer class for iframe management and PostMessage communication
+  - Weaver class for script injection and integration
+  - Type-safe SDK payload handling with decoders
+  - CSS property and communication protocol types
 - **Planned Features:**
-  - Theme validation and parsing
-  - CSS variable management
+  - Theme validation and parsing engine
+  - Advanced CSS variable management
   - Event system for theme changes
   - Export/import functionality
-  - Framework-agnostic design
-- **Status:** Basic structure only, implementation pending
+- **Status:** Core implementation complete, 60% done
 
 ## Common Commands
 
@@ -128,6 +133,13 @@ pnpm test         # Run test suite (mentioned in development workflow)
 
 ## Key Technical Details
 
+### SDK Architecture
+- **Entry Point:** `packages/sdk/src/index.ts` - Exports all SDK classes and types
+- **Types:** `packages/sdk/src/types.ts` - Core type definitions, decoders, and communication protocols
+- **Loomer:** `packages/sdk/src/loomer.ts` - Class for iframe management and PostMessage communication
+- **Weaver:** `packages/sdk/src/weaver.ts` - Class for script injection and integration
+- **Dependencies:** Uses `type-decoder` for runtime type validation
+
 ### Weaver Architecture
 - **Entry Point:** `packages/weaver/src/index.ts` - Initializes the weaver and sets up DOM ready handling
 - **Core Logic:** `packages/weaver/src/core.ts` - Handles PostMessage communication and SDK payload processing
@@ -177,12 +189,12 @@ Weaver uses PostMessage API for cross-origin communication:
 
 ## Current Status
 
-Based on PROGRESS.md, the project is approximately 25% complete:
-- **Weaver package:** Has basic structure and communication framework implemented (40% complete)
+Based on PROGRESS.md, the project is approximately 45% complete:
+- **SDK package:** Core implementation complete with types, classes, and build setup (60% complete)
+- **Weaver package:** Has comprehensive structure and communication framework implemented (75% complete)
 - **Loomer:** Has SvelteKit setup complete (25% complete)
-- **SDK package:** Basic structure only, needs initial implementation (0% complete)
 - **Timeline:** Q3-Q4 2025 target
-- **Phase 1 Focus:** Foundation & Core SDK development
+- **Phase 1 Focus:** Foundation & Core SDK development (60% complete)
 
 ### Key Naming Changes
 - Original "Injector" renamed to "Weaver"

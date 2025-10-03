@@ -4,16 +4,18 @@
 
 ## 🎯 Project Overview
 
-**Goal:** Create### 🔧 SDK Package (`@skin-walker/### 🕸️ Weaver Package (`@skin-walker/weaver`)
+**Goal:** Create### 🔧 SDK Package (`@skin-walker/sdk`)
 
-- **Status:** Setup Complete - TypeScript Build Ready
-- **Progress:** 40%
+- **Status:** Core Implementation Complete
+- **Progress:** 60%
 - **Technology:** Vanilla TypeScript with Rollup bundling
-- **Next Steps:** Implement core weaver functionality and cross-origin communication
-- **Status:** Started - Basic Structure
-- **Progress:** 10%
-- **Technology:** Vanilla TypeScript (compiles to JavaScript)
-- **Next Steps:** Setup TypeScript configuration and core type definitions
+- **Key Features Implemented:**
+  - Complete TypeScript type definitions and decoders
+  - Loomer class for iframe management and PostMessage communication
+  - Weaver class for script injection
+  - Type-safe SDK payload handling with validation
+  - Rollup build configuration with proper bundling
+- **Next Steps:** Theme persistence, validation logic, and event system
 
 ### 🧶 Loomer Package (`@skin-walker/loomer`)
 
@@ -41,15 +43,15 @@
 **Status:** 🚧 In Development  
 **Version:** 0.1.0-alpha
 
-## 📈 Overall Progress: 35% Complete
+## 📈 Overall Progress: 45% Complete
 
 ```
-[■■■■□□□□□□] 4/10 major milestones
+[■■■■■□□□□□] 5/10 major milestones
 ```
 
 ## 🗺️ Development Roadmap
 
-### Phase 1: Foundation & Core SDK (25% Complete)
+### Phase 1: Foundation & Core SDK (60% Complete)
 
 **Timeline:** July - August 2025
 
@@ -63,17 +65,17 @@
   - [x] Configure linting and formatting (ESLint + Prettier) - Done for Loomer and Weaver
   - [ ] Setup CI/CD pipeline
 
-- [ ] **Core SDK Development** (`/packages/sdk`)
+- [x] **Core SDK Development** (`/packages/sdk`)
 
-  - [ ] Vanilla TypeScript project setup
-  - [ ] Theme interface and type definitions
-  - [ ] CSS variable detection and parsing
-  - [ ] Theme validation logic
-  - [ ] Theme application engine
+  - [x] Vanilla TypeScript project setup with Rollup bundling
+  - [x] Complete type definitions and message handling
+  - [x] Loomer class for iframe management and communication
+  - [x] Weaver class for script injection
+  - [x] Type-safe decoders and validation
+  - [ ] Theme validation logic and application engine
   - [ ] Event system implementation
   - [ ] Export/import functionality
-  - [ ] Browser compatibility layer
-  - [ ] TypeScript to JavaScript compilation
+  - [ ] Browser compatibility layer testing
 
 - [ ] **SDK Testing**
   - [ ] Unit tests for core functionality
@@ -187,10 +189,16 @@
 
 ### 🔧 SDK Package (`@skin-walker/sdk`)
 
-- **Status:** Basic Structure Only
-- **Progress:** 10%
-- **Technology:** Vanilla TypeScript (compiles to JavaScript)
-- **Next Steps:** Core interface definitions and theme validation logic
+- **Status:** Core Implementation Complete
+- **Progress:** 60%
+- **Technology:** Vanilla TypeScript with Rollup bundling
+- **Features Complete:**
+  - Complete TypeScript type definitions and runtime validation
+  - Loomer class for iframe management and PostMessage communication
+  - Weaver class for script injection and integration
+  - Type-safe SDK payload handling with decoders
+  - Rollup build configuration with proper bundling
+- **Next Steps:** Theme persistence, validation logic, and event system
 
 ### 🧶 Loomer Package (`@skin-walker/loomer`)
 
