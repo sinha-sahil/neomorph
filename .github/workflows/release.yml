@@ -1,0 +1,212 @@
+name: Release and Deploy
+
+on:
+  push:
+    branches: [release]
+  pull_request:
+    branches: [release]
+    types: [closed]
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      sdk-changed: ${{ steps.changes.outputs.sdk }}
+      weaver-changed: ${{ steps.changes.outputs.weaver }}
+      loomer-changed: ${{ steps.changes.outputs.loomer }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect package changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            sdk:
+              - 'packages/sdk/**'
+            weaver:
+              - 'packages/weaver/**'
+            loomer:
+              - 'packages/loomer/**'
+
+  release:
+    needs: detect-changes
+    if: |
+      needs.detect-changes.outputs.sdk-changed == 'true' ||
+      needs.detect-changes.outputs.weaver-changed == 'true' ||
+      needs.detect-changes.outputs.loomer-changed == 'true'
+
+    runs-on: ubuntu-latest
+    environment: publish-env
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Get latest commit info
+        id: commit-info
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=format:"%s")
+          echo "message=$COMMIT_MSG" >> $GITHUB_OUTPUT
+
+          # Determine semantic version bump based on commit message
+          if [[ "$COMMIT_MSG" =~ ^feat(\(.+\))?!: ]] || [[ "$COMMIT_MSG" =~ BREAKING[[:space:]]CHANGE ]]; then
+            echo "bump=major" >> $GITHUB_OUTPUT
+          elif [[ "$COMMIT_MSG" =~ ^feat(\(.+\))?: ]]; then
+            echo "bump=minor" >> $GITHUB_OUTPUT
+          elif [[ "$COMMIT_MSG" =~ ^fix(\(.+\))?: ]] || [[ "$COMMIT_MSG" =~ ^perf(\(.+\))?: ]]; then
+            echo "bump=patch" >> $GITHUB_OUTPUT
+          else
+            echo "bump=patch" >> $GITHUB_OUTPUT
+          fi
+
+      # SDK Package Publishing
+      - name: Publish SDK to npm
+        if: needs.detect-changes.outputs.sdk-changed == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd packages/sdk
+
+          # Get current version
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "Current SDK version: $CURRENT_VERSION"
+
+          # Bump version based on commit type
+          case "${{ steps.commit-info.outputs.bump }}" in
+            major)
+              NEW_VERSION=$(npm version major --no-git-tag-version)
+              ;;
+            minor)
+              NEW_VERSION=$(npm version minor --no-git-tag-version)
+              ;;
+            patch)
+              NEW_VERSION=$(npm version patch --no-git-tag-version)
+              ;;
+          esac
+
+          # Remove 'v' prefix from version
+          NEW_VERSION=${NEW_VERSION#v}
+          echo "New SDK version: $NEW_VERSION"
+          echo "SDK_NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+          # Build and publish
+          pnpm build
+          npm publish
+
+          echo "SDK_PUBLISHED=true" >> $GITHUB_ENV
+
+      # Weaver Package Build and Version Update
+      - name: Build and version Weaver
+        if: needs.detect-changes.outputs.weaver-changed == 'true'
+        run: |
+          cd packages/weaver
+
+          # Get current version
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "Current Weaver version: $CURRENT_VERSION"
+
+          # Bump version
+          case "${{ steps.commit-info.outputs.bump }}" in
+            major)
+              NEW_VERSION=$(npm version major --no-git-tag-version)
+              ;;
+            minor)
+              NEW_VERSION=$(npm version minor --no-git-tag-version)
+              ;;
+            patch)
+              NEW_VERSION=$(npm version patch --no-git-tag-version)
+              ;;
+          esac
+
+          # Remove 'v' prefix from version
+          NEW_VERSION=${NEW_VERSION#v}
+          echo "New Weaver version: $NEW_VERSION"
+          echo "WEAVER_NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+          # Build
+          pnpm build
+
+          echo "WEAVER_BUILT=true" >> $GITHUB_ENV
+
+      # Loomer Deployment to Vercel
+      - name: Deploy Loomer to Vercel
+        if: needs.detect-changes.outputs.loomer-changed == 'true'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          cd packages/loomer
+
+          # Install Vercel CLI
+          npm install -g vercel
+
+          # Deploy to production
+          vercel --prod --token $VERCEL_TOKEN
+
+          echo "LOOMER_DEPLOYED=true" >> $GITHUB_ENV
+
+      # Commit version changes and create tags
+      - name: Commit changes and create tags
+        run: |
+          TAGS_TO_CREATE=""
+
+          # Add version changes to git
+          if [[ "${{ env.SDK_PUBLISHED }}" == "true" ]]; then
+            git add packages/sdk/package.json
+            TAGS_TO_CREATE="$TAGS_TO_CREATE sdk/${{ env.SDK_NEW_VERSION }}"
+          fi
+
+          if [[ "${{ env.WEAVER_BUILT }}" == "true" ]]; then
+            git add packages/weaver/package.json
+            TAGS_TO_CREATE="$TAGS_TO_CREATE weaver/${{ env.WEAVER_NEW_VERSION }}"
+          fi
+
+          # Create single commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No version changes to commit"
+          else
+            git commit -m "chore: bump package versions
+
+            ${{ steps.commit-info.outputs.message }}"
+            git push origin release
+          fi
+
+          # Create and push tags
+          for tag in $TAGS_TO_CREATE; do
+            if [[ -n "$tag" ]]; then
+              echo "Creating tag: $tag"
+              git tag "$tag"
+            fi
+          done
+
+          # Push all tags at once
+          if [[ -n "$TAGS_TO_CREATE" ]]; then
+            git push origin --tags
+          fi
