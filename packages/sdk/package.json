@@ -1,8 +1,8 @@
 {
-  "name": "skin-walker",
+  "name": "@skinwalker/sdk",
   "type": "module",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.0",
+  "description": "Core SDK for Skin Walker - Interactive theme designer toolkit for web applications",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -11,6 +11,9 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "dev": "rollup -c rollup.config.js --watch",
     "build": "rollup --config rollup.config.js",
@@ -18,10 +21,31 @@
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
     "clean": "rm -rf dist"
   },
-  "keywords": [],
+  "keywords": [
+    "theme",
+    "css-variables",
+    "customization",
+    "ui",
+    "design-system",
+    "theming",
+    "sdk",
+    "@skinwalker/sdk"
+  ],
   "author": "Sahil Sinha",
   "license": "ISC",
-  "packageManager": "pnpm@10.5.2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sinha-sahil/skin-walker.git",
+    "directory": "packages/sdk"
+  },
+  "homepage": "https://github.com/sinha-sahil/skin-walker#readme",
+  "bugs": {
+    "url": "https://github.com/sinha-sahil/skin-walker/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "pnpm@10.18.0",
   "dependencies": {
     "type-decoder": "^2.1.0"
   },

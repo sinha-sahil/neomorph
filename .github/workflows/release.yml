@@ -58,7 +58,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: latest
+          version: 10.18.0
 
       - name: Install dependencies
         run: pnpm install
@@ -90,6 +90,7 @@ jobs:
         if: needs.detect-changes.outputs.sdk-changed == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           cd packages/sdk
 
@@ -117,7 +118,13 @@ jobs:
 
           # Build and publish
           pnpm build
-          npm publish
+
+          # Verify package.json was updated
+          echo "Updated package.json version:"
+          node -p "require('./package.json').version"
+
+          # Publish with explicit registry and access
+          npm publish --access public --registry https://registry.npmjs.org
 
           echo "SDK_PUBLISHED=true" >> $GITHUB_ENV
 
@@ -154,23 +161,23 @@ jobs:
 
           echo "WEAVER_BUILT=true" >> $GITHUB_ENV
 
-      # Loomer Deployment to Vercel
-      - name: Deploy Loomer to Vercel
-        if: needs.detect-changes.outputs.loomer-changed == 'true'
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: |
-          cd packages/loomer
+      # Loomer Deployment to Vercel (DISABLED - will enable later)
+      # - name: Deploy Loomer to Vercel
+      #   if: needs.detect-changes.outputs.loomer-changed == 'true'
+      #   env:
+      #     VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      #     VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      #     VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      #   run: |
+      #     cd packages/loomer
 
-          # Install Vercel CLI
-          npm install -g vercel
+      #     # Install Vercel CLI
+      #     npm install -g vercel
 
-          # Deploy to production
-          vercel --prod --token $VERCEL_TOKEN
+      #     # Deploy to production
+      #     vercel --prod --token $VERCEL_TOKEN
 
-          echo "LOOMER_DEPLOYED=true" >> $GITHUB_ENV
+      #     echo "LOOMER_DEPLOYED=true" >> $GITHUB_ENV
 
       # Commit version changes and create tags
       - name: Commit changes and create tags

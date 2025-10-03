@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "description": "Interactive theme designer toolkit for web applications",
   "type": "module",
-  "packageManager": "pnpm@10.5.2",
+  "packageManager": "pnpm@10.18.0",
   "scripts": {
     "build:all": "turbo build",
     "dev": "turbo dev",
@@ -21,5 +21,10 @@
   },
   "devDependencies": {
     "turbo": "^2.3.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

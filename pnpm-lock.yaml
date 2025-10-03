@@ -14,7 +14,7 @@ importers:
 
   packages/loomer:
     dependencies:
-      skin-walker-sdk:
+      '@skinwalker/sdk':
         specifier: workspace:*
         version: link:../sdk
     devDependencies:
@@ -124,9 +124,6 @@ importers:
 
   packages/weaver:
     dependencies:
-      skin-walker-sdk:
-        specifier: ../sdk
-        version: link:../sdk
       type-decoder:
         specifier: ^2.1.0
         version: 2.1.0

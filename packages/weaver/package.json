@@ -1,8 +1,8 @@
 {
-  "name": "weaver",
+  "name": "@skinwalker/weaver",
   "type": "module",
   "version": "1.0.0",
-  "description": "",
+  "description": "Integration script for Skin Walker - Enables cross-origin communication and CSS variable scraping",
   "main": "index.js",
   "scripts": {
     "dev": "rollup -c rollup.config.js --watch",
@@ -11,13 +11,12 @@
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
     "clean": "rm -rf dist"
   },
-  "keywords": [],
+  "keywords": ["theme", "css-variables", "integration", "postmessage", "cross-origin", "weaver"],
   "author": "Sahil Sinha",
   "license": "ISC",
-  "packageManager": "pnpm@10.5.2",
+  "packageManager": "pnpm@10.18.0",
   "dependencies": {
-    "type-decoder": "^2.1.0",
-    "skin-walker-sdk": "../sdk"
+    "type-decoder": "^2.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
