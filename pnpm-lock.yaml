@@ -15,8 +15,8 @@ importers:
   packages/loomer:
     dependencies:
       '@neomorph/sdk':
-        specifier: workspace:*
-        version: link:../sdk
+        specifier: ^0.0.1
+        version: 0.0.1
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.5
@@ -419,6 +419,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@neomorph/sdk@0.0.1':
+    resolution: {integrity: sha512-wX8dKx+H1B/z37LR9qSrqoOf7Grip/fJ5bHQpIQL8w3WHhxAqO63U1C2B/kf6OB8gausTxUK+n6bZgpGAKKnGw==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -1630,6 +1633,10 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@neomorph/sdk@0.0.1':
+    dependencies:
+      type-decoder: 2.1.0
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:

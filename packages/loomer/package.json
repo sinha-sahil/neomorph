@@ -15,7 +15,7 @@
 		"clean": "rm -rf .svelte-kit dist"
 	},
 	"dependencies": {
-		"@neomorph/sdk": "workspace:*"
+		"@neomorph/sdk": "^0.0.1"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
