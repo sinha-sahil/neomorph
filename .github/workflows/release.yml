@@ -204,6 +204,7 @@ jobs:
 
           if [[ "${{ env.WEAVER_BUILT }}" == "true" ]]; then
             git add packages/weaver/package.json
+            git add packages/weaver/build/
             TAGS_TO_CREATE="$TAGS_TO_CREATE weaver/${{ env.WEAVER_NEW_VERSION }}"
           fi
 
