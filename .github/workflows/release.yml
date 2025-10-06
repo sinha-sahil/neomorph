@@ -122,6 +122,7 @@ jobs:
 
           # Build and publish
           pnpm build
+          pnpm build:cdn
 
           # Verify package.json was updated
           echo "Updated package.json version:"
@@ -197,9 +198,14 @@ jobs:
           # Add version changes to git and create tags only for successfully published packages
           if [[ "${{ env.SDK_PUBLISHED }}" == "true" ]]; then
             git add packages/sdk/package.json
+            git add packages/build/sdk
             TAGS_TO_CREATE="$TAGS_TO_CREATE sdk/${{ env.SDK_NEW_VERSION }}"
           elif [[ "${{ env.SDK_PUBLISHED }}" == "false" ]]; then
             echo "Skipping SDK tag creation - version already exists on npm"
+            # Still add build files if SDK was changed
+            if [[ "${{ needs.detect-changes.outputs.sdk-changed }}" == "true" ]]; then
+              git add packages/build/sdk
+            fi
           fi
 
           if [[ "${{ env.WEAVER_BUILT }}" == "true" ]]; then

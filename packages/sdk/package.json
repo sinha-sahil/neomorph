@@ -18,6 +18,7 @@
   "scripts": {
     "dev": "rollup -c rollup.config.js --watch",
     "build": "rollup --config rollup.config.js",
+    "build:cdn": "rollup --config rollup.config.js --environment buildType=cdn",
     "format": "npx prettier --write .",
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
     "clean": "rm -rf dist"
