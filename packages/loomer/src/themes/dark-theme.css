@@ -1,0 +1,64 @@
+/*
+ * Dark Theme Override for Neomorph Loomer Header Banner
+ * This file demonstrates how to customize the header banner using CSS variables
+ */
+
+:root {
+  /* Header Background */
+  --header-bg-primary: #1e293b;
+  --header-bg-secondary: #0f172a;
+  --header-border-color: #334155;
+
+  /* Header Spacing */
+  --header-padding-top: 100px;
+  --header-padding-bottom: 80px;
+  --header-padding-horizontal: 32px;
+
+  /* Content Width */
+  --content-max-width: 900px;
+
+  /* Badge Styling */
+  --badge-bg-primary: #7c3aed;
+  --badge-bg-secondary: #a855f7;
+  --badge-text-color: white;
+  --badge-shadow-color: rgba(124, 58, 237, 0.3);
+
+  /* Title Styling */
+  --title-font-size: 64px;
+  --title-bg-primary: #f8fafc;
+  --title-bg-secondary: #e2e8f0;
+  --title-letter-spacing: -0.03em;
+
+  /* Subtitle Styling */
+  --subtitle-color: #94a3b8;
+  --subtitle-font-size: 22px;
+
+  /* Feature Pills */
+  --pill-bg: #334155;
+  --pill-color: #e2e8f0;
+  --pill-border-color: #475569;
+  --pill-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --pill-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.3);
+
+  /* Background Elements */
+  --element-bg-primary: rgba(124, 58, 237, 0.15);
+  --element-bg-secondary: rgba(168, 85, 247, 0.15);
+  --element-animation-duration: 8s;
+}
+
+/* Mobile responsive adjustments for dark theme */
+@media (max-width: 768px) {
+  :root {
+    --header-padding-top: 80px;
+    --header-padding-bottom: 60px;
+    --title-font-size: 48px;
+    --subtitle-font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --title-font-size: 36px;
+    --subtitle-font-size: 18px;
+  }
+}
