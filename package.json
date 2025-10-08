@@ -12,12 +12,16 @@
     "format": "turbo format",
     "check": "turbo check",
     "clean": "turbo clean",
-    "build:loomer": "turbo build --filter=loomer",
-    "build:weaver": "turbo build --filter=weaver",
-    "build:sdk": "turbo build --filter=sdk",
-    "dev:loomer": "turbo dev --filter=loomer",
-    "dev:weaver": "turbo dev --filter=weaver",
-    "dev:sdk": "turbo dev --filter=sdk"
+    "build:loomer": "turbo build --filter=@neomorph/loomer",
+    "build:weaver": "turbo build --filter=@neomorph/weaver",
+    "build:sdk": "turbo build --filter=@neomorph/sdk",
+    "build:cdn": "turbo build:cdn --filter=@neomorph/sdk",
+    "dev:loomer": "turbo dev --filter=@neomorph/loomer",
+    "dev:weaver": "turbo dev --filter=@neomorph/weaver",
+    "dev:sdk": "turbo dev --filter=@neomorph/sdk",
+    "dev:cdn": "turbo dev:cdn --filter=@neomorph/sdk",
+    "preview:loomer": "turbo preview --filter=@neomorph/loomer",
+    "check:watch": "turbo check:watch --filter=@neomorph/loomer"
   },
   "devDependencies": {
     "turbo": "^2.3.3"

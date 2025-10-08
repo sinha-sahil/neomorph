@@ -36,6 +36,7 @@ export default [
         ? [
             serve({
               contentBase: 'dist',
+              port: 9898,
               headers: {
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',

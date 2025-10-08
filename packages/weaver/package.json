@@ -11,7 +11,15 @@
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
     "clean": "rm -rf dist"
   },
-  "keywords": ["neomorph", "theme", "css-variables", "integration", "postmessage", "cross-origin", "transformation"],
+  "keywords": [
+    "neomorph",
+    "theme",
+    "css-variables",
+    "integration",
+    "postmessage",
+    "cross-origin",
+    "transformation"
+  ],
   "author": "Sahil Sinha",
   "license": "ISC",
   "repository": {

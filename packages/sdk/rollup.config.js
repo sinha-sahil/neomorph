@@ -2,10 +2,12 @@ import typescript from "@rollup/plugin-typescript";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import terser from "@rollup/plugin-terser";
+import serve from "rollup-plugin-serve";
 import packageJson from "./package.json" with { type: "json" };
 
 const processArguments = process.argv;
 let buildTarget = "cdn" | "nodePackage";
+const isDev = process.env.NODE_ENV === "development" || process.env.ROLLUP_WATCH;
 
 processArguments.forEach((arg) => {
   if (arg.includes("buildType=cdn")) {
@@ -43,6 +45,18 @@ function config() {
           }),
         }),
         terser(),
+        ...(isDev && buildTarget === "cdn"
+          ? [
+              serve({
+                contentBase: "../../build/sdk",
+                headers: {
+                  "Access-Control-Allow-Origin": "*",
+                  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                },
+              }),
+            ]
+          : []),
       ],
     },
   ];
