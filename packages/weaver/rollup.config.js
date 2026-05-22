@@ -31,7 +31,7 @@ export default [
           outDir: `../../build/weaver/${packageJson.version}`
         }
       }),
-      terser(),
+      terser({ mangle: false }),
       ...(isDev
         ? [
             serve({

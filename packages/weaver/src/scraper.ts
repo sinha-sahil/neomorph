@@ -1,24 +1,45 @@
-import { CSSProperty, DocumentHost, DocumentLike, HostStyles } from './types';
+import {
+  CSSProperty,
+  CleanupFn,
+  DocumentHost,
+  DocumentLike,
+  HostStyles,
+  HostStyleMap,
+  MutationObserverConfig,
+  MutationResponder,
+  ScrapedResult,
+  TimerId,
+  VoidCallback
+} from './types';
+import { getConfig, isApplying } from './state';
 
-const HostStyleMap: Map<string, { name: string; target: DocumentLike; styles: HostStyles }> =
-  new Map();
+const hostStyleMap: HostStyleMap = new Map();
 
-export function scrapeOnMutation(responder: (result: Map<string, HostStyles>) => void) {
-  const hosts = scrapeDocumentHosts();
-  const config = { attributes: false, childList: true, subtree: false };
+export function getHostStyleMap(): HostStyleMap {
+  return hostStyleMap;
+}
 
-  const callback = () => {
-    const result = scrapeCssVariables();
-    responder(result);
-  };
-  hosts.forEach((host) => {
-    if (host.name === 'document') {
-      return;
+function debounce(fn: VoidCallback, delay: number): VoidCallback & { cancel: CleanupFn } {
+  let timer: TimerId = null;
+  return Object.assign(
+    (...args: unknown[]) => {
+      if (timer !== null) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        fn(...args);
+        timer = null;
+      }, delay);
+    },
+    {
+      cancel: () => {
+        if (timer !== null) {
+          clearTimeout(timer);
+          timer = null;
+        }
+      }
     }
-
-    const observer = new MutationObserver(callback);
-    observer.observe(host.target, config);
-  });
+  );
 }
 
 function containsCssVariable(value: string): boolean {
@@ -44,24 +65,30 @@ function scrapeDocumentHosts(): Array<DocumentHost> {
     }
   }
 
+  const filter = getConfig().hostFilter;
+  if (filter !== null) {
+    return hosts.filter((h) => filter.includes(h.name));
+  }
   return hosts;
 }
 
-function scrapeCSSVariables(rootElement: DocumentLike): HostStyles {
-  const styleSheets: StyleSheetList = rootElement.styleSheets;
-  const map = new Map<string, Array<CSSProperty>>();
+function scrapeHostStyles(rootElement: DocumentLike): HostStyles {
+  const map: HostStyles = new Map();
 
   try {
+    const styleSheets: StyleSheetList = rootElement.styleSheets;
     for (const sheet of styleSheets) {
       const cssRules: CSSRuleList = sheet.cssRules;
       for (const rule of cssRules) {
-        const styleRule = rule as CSSStyleRule;
-        const style: CSSStyleDeclaration = styleRule.style;
+        if (!(rule instanceof CSSStyleRule)) {
+          continue;
+        }
+        const style: CSSStyleDeclaration = rule.style;
         if (typeof style === 'object') {
           const styleRecord = JSON.parse(JSON.stringify(style));
-          const variables = [];
+          const variables: Array<CSSProperty> = [];
           for (const prop in styleRecord) {
-            const value = styleRecord[prop];
+            const value: string = styleRecord[prop];
             if (value !== '' && containsCssVariable(value)) {
               variables.push({
                 property: prop,
@@ -70,7 +97,7 @@ function scrapeCSSVariables(rootElement: DocumentLike): HostStyles {
             }
           }
           if (variables.length > 0) {
-            map.set(styleRule.selectorText, variables);
+            map.set(rule.selectorText, variables);
           }
         }
       }
@@ -82,20 +109,45 @@ function scrapeCSSVariables(rootElement: DocumentLike): HostStyles {
   return map;
 }
 
-export function scrapeCssVariables(): Map<string, HostStyles> {
+export function scrapeCssVariables(): ScrapedResult {
   const hosts = scrapeDocumentHosts();
-  const result = new Map<string, HostStyles>();
+  const result: ScrapedResult = new Map();
   hosts.forEach((host) => {
-    const styles = scrapeCSSVariables(host.target);
+    const styles = scrapeHostStyles(host.target);
     result.set(host.name, styles);
-    HostStyleMap.set(host.name, {
+    hostStyleMap.set(host.name, {
       name: host.name,
       target: host.target,
       styles: styles
     });
   });
 
-  console.log('🕸️ Weaver: Scraped CSS variables:', result);
-
   return result;
+}
+
+export function scrapeOnMutation(responder: MutationResponder): CleanupFn {
+  const hosts = scrapeDocumentHosts();
+  const config: MutationObserverConfig = { attributes: false, childList: true, subtree: false };
+  const observers: Array<MutationObserver> = [];
+
+  const callback = debounce(() => {
+    if (isApplying()) {
+      return;
+    }
+    responder(scrapeCssVariables());
+  }, getConfig().debounceMs);
+
+  hosts.forEach((host) => {
+    if (host.name === 'document') {
+      return;
+    }
+    const observer = new MutationObserver(callback);
+    observer.observe(host.target, config);
+    observers.push(observer);
+  });
+
+  return () => {
+    observers.forEach((obs) => obs.disconnect());
+    callback.cancel();
+  };
 }

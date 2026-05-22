@@ -7,7 +7,9 @@ function injectToWindow() {
       Loomer,
       Weaver,
     };
-  } catch (e) {}
+  } catch (e) {
+    console.error("Neomorph: Failed to attach SDK to window:", e);
+  }
 }
 
 injectToWindow();

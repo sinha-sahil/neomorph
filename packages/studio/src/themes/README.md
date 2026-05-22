@@ -1,6 +1,6 @@
 # Header Banner Theme Customization
 
-This directory contains example theme files that demonstrate how to customize the Neomorph Loomer header banner using CSS variables.
+This directory contains example theme files that demonstrate how to customize the Neomorph Studio header banner using CSS variables.
 
 For more information about Neomorph and integration guides, visit the [GitHub repository](https://github.com/sinha-sahil/neomorph).
 

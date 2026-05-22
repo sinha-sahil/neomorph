@@ -1,145 +1,95 @@
-# 🔮 Neomorph - Advanced Theme Transformation Toolkit
+# 🔮 Neomorph
 
-> A complete ecosystem for building sophisticated theme transformation capabilities in web applications
+> Let anyone rebrand your web app in real time — without you rewriting a single component.
 
-Neomorph is a comprehensive solution that enables developers to quickly add advanced theme customization and transformation capabilities to their web applications. With just a few lines of code, users can design, preview, and apply dynamic themes in real-time.
+If your app styles itself with CSS variables, Neomorph turns it into a themeable canvas. Drop one `<script>` tag in, and from then on **anyone** — your designers, your customers, your white-label clients — can recolor, restyle, and preview the result live, all from a separate designer surface.
 
-## 🚀 Features
+No SDK calls inside your app. No framework coupling. No re-deploys to ship a new look.
 
-- **🔧 Universal SDK** - Easy integration with any web framework
-- **🎨 Visual Theme Designer** - Drag-and-drop interface for theme creation
-- **⚡ Real-time Preview** - See changes instantly as you design
-- **📱 Responsive Design** - Works seamlessly across all devices
-- **🔌 Simple Integration** - Just add one script tag to get started
-- **💾 Theme Export/Import** - Save and share themes as JSON
-- **🎯 CSS Variable Based** - Works with any application using CSS custom properties
-
-## 📋 Prerequisites
-
-Your web application must use CSS custom properties (CSS variables) for theming. For example:
-
-```css
-:root {
-  --primary-color: #3498db;
-  --secondary-color: #2ecc71;
-  --background-color: #ffffff;
-  --text-color: #333333;
-  --border-radius: 4px;
-  --font-size-base: 16px;
-}
-
-.button {
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  border-radius: var(--border-radius);
-  font-size: var(--font-size-base);
-}
-```
-
-## 🏗️ Architecture
-
-The project consists of three main components:
-
-### 1. 📦 SDK (`@neomorph/sdk`)
-
-The core JavaScript SDK that provides APIs for advanced theme transformation and management.
-
-**Key Features:**
-
-- Theme validation and parsing
-- CSS variable management
-- Event system for theme changes
-- Export/import functionality
-- Framework-agnostic design
-
-### 2. 🎨 Loomer (`@neomorph/loomer`)
-
-A sophisticated web application that provides the visual interface for dynamic theme creation and transformation.
-
-**Key Features:**
-
-- Color picker with accessibility validation
-- Typography controls
-- Spacing and layout adjustments
-- Real-time preview
-- Theme templates and presets
-- Export to multiple formats
-
-### 3. 🕷️ Weaver (`@neomorph/weaver`)
-
-A lightweight integration script that weaves theme transformations seamlessly into your application.
-
-**Key Features:**
-
-- Automatic CSS variable detection
-- Cross-origin communication
-- Theme persistence
-- Hot-swapping capabilities
-- Minimal performance impact
-
-## 🚀 Quick Start
-
-> **Note:** The project is currently in development. Usage examples and API documentation will be added once the interfaces are finalized.
-
-## 🎯 Use Cases
-
-- **SaaS Applications** - Let users customize their dashboard themes
-- **E-commerce Platforms** - Allow merchants to brand their stores
-- **Content Management Systems** - Enable theme customization for websites
-- **White-label Products** - Provide branding capabilities to clients
-- **Design Systems** - Create theme variations for different brands
-
-## 🛠️ Development
-
-### Prerequisites
-
-- Node.js 18+
-- pnpm (recommended) or npm
-- Modern browser with ES2020 support
-
-### Setup
-
-> **Note:** Setup instructions will be finalized once the project structure is implemented.
-
-```bash
-# Clone the repository
-git clone https://github.com/sinha-sahil/neomorph.git
-cd neomorph
-
-# Setup instructions coming soon...
-```
-
-### Project Structure
-
-```
-neomorph/
-├── packages/
-│   ├── sdk/              # @neomorph/sdk - Core transformation SDK
-│   ├── loomer/           # @neomorph/loomer - Theme designer UI
-│   └── weaver/           # @neomorph/weaver - Integration script
-├── examples/             # Integration examples
-└── docs/                 # Documentation
-```
-
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Development Workflow
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes
-4. Add tests for new functionality
-5. Run the test suite: `pnpm test`
-6. Commit your changes: `git commit -m 'Add amazing feature'`
-7. Push to the branch: `git push origin feature/amazing-feature`
-8. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+<!--
+  Add a Studio screenshot or GIF here once available:
+  ![Neomorph Studio in action](docs/screenshot.png)
+-->
 
 ---
+
+## Why teams use Neomorph
+
+- 🎨 **Live theming** — colors, spacing, typography update in the iframe the moment they change.
+- 🔌 **One-line integration** — a single `<script>` tag in the app being themed. That's the only contract.
+- 🧰 **Drop-in app, or your own UI** — use **Neomorph Studio** out of the box, or build branded theming into your own product with the headless **SDK**.
+- 💾 **Persists across reloads** — applied themes survive page refreshes via `localStorage`, and Neomorph watches the DOM to keep dynamic styles in sync.
+- 🪶 **Tiny** — the in-app script is ~3 KB gzipped.
+
+---
+
+## Try it in 30 seconds
+
+**1. Add one line to the app you want to theme:**
+
+```html
+<script
+  type="module"
+  src="https://cdn.jsdelivr.net/gh/sinha-sahil/neomorph/build/weaver/1.0.0/index.js"
+></script>
+```
+
+**2. Spin up Neomorph Studio and point it at your app:**
+
+```bash
+pnpm dev:studio
+# then open http://localhost:9900/?appUrl=https://your-app.com
+```
+
+That's it. Edit themes visually; changes are previewed live in the iframe.
+
+---
+
+## Or build theming into your own product
+
+```ts
+import { Loomer } from "@neomorph/sdk";
+
+const loomer = new Loomer();
+loomer.loadApplication("https://your-app.com", document.getElementById("preview"));
+
+loomer.applyCssVariables(
+  { document: { "--color-primary": "#e11d48" } },
+  /* persist */ true,
+);
+```
+
+Headless. Framework-agnostic. Ship per-customer branding without touching the app you're branding.
+
+---
+
+## Use cases
+
+- **SaaS** — let customers theme their own dashboards
+- **E-commerce** — let merchants brand their storefronts
+- **White-label** — ship per-client branding without per-client builds
+- **Design systems** — author, preview, and hand off theme variants
+
+---
+
+## Get started
+
+```bash
+git clone https://github.com/sinha-sahil/neomorph.git
+cd neomorph && pnpm install
+```
+
+| If you want to… | Look at |
+|---|---|
+| Use the visual designer | [`@neomorph/studio`](packages/studio) |
+| Build theming into your own product | [`@neomorph/sdk`](packages/sdk) |
+| Understand the in-app script | [`@neomorph/weaver`](packages/weaver) |
+| Contribute | [CONTRIBUTING.md](CONTRIBUTING.md) |
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE).
 
 Made with ❤️ by [Sahil Sinha](https://github.com/sinha-sahil)

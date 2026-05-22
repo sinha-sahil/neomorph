@@ -1,12 +1,13 @@
 {
-	"name": "@neomorph/loomer",
+	"name": "@neomorph/studio",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
+	"description": "Neomorph Studio - Visual theme designer for editing a target application's CSS variables in real time",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/sinha-sahil/neomorph.git",
-		"directory": "packages/loomer"
+		"directory": "packages/studio"
 	},
 	"homepage": "https://github.com/sinha-sahil/neomorph#readme",
 	"bugs": {
@@ -24,7 +25,7 @@
 		"clean": "rm -rf .svelte-kit dist"
 	},
 	"dependencies": {
-		"@neomorph/sdk": "^0.0.1"
+		"@neomorph/sdk": "workspace:*"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",

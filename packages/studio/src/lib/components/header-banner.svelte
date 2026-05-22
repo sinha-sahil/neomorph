@@ -6,7 +6,7 @@
 	}
 
 	let {
-		title = "Neomorph Loomer",
+		title = "Neomorph Studio",
 		subtitle = "Visual theme editor for modern web apps",
 		showBadge = true
 	}: Props = $props();

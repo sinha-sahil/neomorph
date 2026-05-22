@@ -1,13 +1,32 @@
-import { setupListener } from './core';
+import { setupListener, teardown } from './messaging';
+import { loadConfigFromWindow } from './state';
+import { loadTheme } from './storage';
+import { scrapeCssVariables, getHostStyleMap } from './scraper';
+import { applyCssVariables } from './applier';
+
+export { teardown };
 
 function initWeaver() {
   try {
-    console.log('🕸️ Weaver initialized - scraping CSS variables...');
+    loadConfigFromWindow();
     setupListener();
+    restoreTheme();
+    console.log('🕸️ Weaver initialized');
   } catch (error) {
-    console.error('🕸️ Weaver: Error during CSS variable scraping:', error);
+    console.error('🕸️ Weaver: Error during initialization:', error);
     return null;
   }
+}
+
+function restoreTheme() {
+  const theme = loadTheme();
+  if (theme === null) {
+    return;
+  }
+
+  scrapeCssVariables();
+  applyCssVariables(theme, getHostStyleMap());
+  console.log('🕸️ Weaver: Restored saved theme');
 }
 
 function handleDOMReady(): void {

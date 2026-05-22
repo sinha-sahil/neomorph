@@ -12,19 +12,28 @@
     "format": "turbo format",
     "check": "turbo check",
     "clean": "turbo clean",
-    "build:loomer": "turbo build --filter=@neomorph/loomer",
+    "build:studio": "turbo build --filter=@neomorph/studio",
     "build:weaver": "turbo build --filter=@neomorph/weaver",
     "build:sdk": "turbo build --filter=@neomorph/sdk",
     "build:cdn": "turbo build:cdn --filter=@neomorph/sdk",
-    "dev:loomer": "turbo dev --filter=@neomorph/loomer",
+    "dev:studio": "turbo dev --filter=@neomorph/studio",
     "dev:weaver": "turbo dev --filter=@neomorph/weaver",
     "dev:sdk": "turbo dev --filter=@neomorph/sdk",
     "dev:cdn": "turbo dev:cdn --filter=@neomorph/sdk",
-    "preview:loomer": "turbo preview --filter=@neomorph/loomer",
-    "check:watch": "turbo check:watch --filter=@neomorph/loomer"
+    "preview:studio": "turbo preview --filter=@neomorph/studio",
+    "check:watch": "turbo check:watch --filter=@neomorph/studio",
+    "example": "pnpm --filter @neomorph/examples dev"
   },
   "devDependencies": {
-    "turbo": "^2.3.3"
+    "@eslint/js": "^9.36.0",
+    "@typescript-eslint/eslint-plugin": "^8.58.2",
+    "@typescript-eslint/parser": "^8.58.2",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-unused-imports": "^4.4.1",
+    "globals": "^16.4.0",
+    "turbo": "^2.3.3",
+    "typescript-eslint": "^8.44.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

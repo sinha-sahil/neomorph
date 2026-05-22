@@ -1,189 +1,149 @@
 # @neomorph/sdk
 
-Advanced theme transformation SDK for web applications. Enables dynamic theme customization through CSS custom properties with cross-origin communication support.
+The **headless, framework-agnostic** core of Neomorph. Use it to add live CSS-variable theming to your own product — load a target app, read its theme, write a new one.
 
-[![npm version](https://badge.fury.io/js/@neomorph%2Fsdk.svg)](https://www.npmjs.com/package/@neomorph/sdk)
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+The SDK has no UI of its own. [Neomorph Studio](../studio) is a visual designer built on top of this SDK; this package is what you reach for when you want to build that experience into your own app instead.
 
-## 🎯 Overview
+## What's in the box
 
-The Neomorph SDK provides communication tools for building theme designer interfaces. It enables theme designers to retrieve CSS variable data from target applications and build custom theme customization UIs.
+The SDK exports two classes:
 
-## 🏗️ Architecture
+| Class | Side | Responsibility |
+|---|---|---|
+| `Loomer` | Designer side (parent window) | Loads a target app in an iframe and drives it: scrape variables, apply a theme, reset, configure, tear down. |
+| `Weaver` | Designer side | One helper — injects the Weaver script into a page from the CDN. |
 
-```
-┌─────────────────┐                           ┌─────────────────┐
-│ Your Application│←──── Neomorph Bridge ────→│ Theme Designer  │
-├─────────────────┤                           ├─────────────────┤
-│ CSS Variables   │                           │ Custom UI       │
-│ • --primary     │                           │ • Color Pickers │
-│ • --font-size   │                           │ • Sliders       │
-│ • --border      │                           │ • Input Fields  │
-└─────────────────┘                           └─────────────────┘
-```
+> **Naming note:** `Loomer` is the *controller class*. "Studio" is the separate ready-made *app*. You use `Loomer`; Studio uses it too.
 
-## 📦 Installation
+The target app itself runs the [`@neomorph/weaver`](../weaver) script — that's a separate package, loaded inside the app being themed, not imported here.
+
+## Installation
 
 ```bash
 npm install @neomorph/sdk
 ```
 
-## 🚀 Quick Start
+Or load the CDN build, which exposes `window.Neomorph.Loomer` and `window.Neomorph.Weaver`.
 
-### Prerequisites
+## Prerequisites
 
-Your application must use CSS custom properties for theming:
+The target app must theme itself with CSS custom properties (`--color-primary`, etc.) and must have the Weaver script loaded. See the [root README](../../README.md) for the full picture.
 
-```css
-:root {
-  --primary-color: #3498db;
-  --secondary-color: #2ecc71;
-  --background-color: #ffffff;
-  --text-color: #333333;
-  --border-radius: 4px;
-  --font-size-base: 16px;
-}
+## Usage
 
-.button {
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  border-radius: var(--border-radius);
-  font-size: var(--font-size-base);
-}
-```
+### Load a target app and read its theme
 
-## 📖 Use Cases
+```ts
+import { Loomer } from '@neomorph/sdk';
 
-### Loomer Integration (Theme Designer Side)
-
-Use the Loomer class to communicate with applications and retrieve CSS variable data. The SDK provides the data and communication layer - you build the actual theme designer UI based on the returned JSON data.
-
-#### Basic Data Retrieval
-
-```typescript
-import { Loomer, type SDKResponse } from '@neomorph/sdk';
-
-// Initialize Loomer for theme designer communication
 const loomer = new Loomer();
 
-// Load target application in iframe with callback
-loomer.loadApplication('https://your-app.com', (response: SDKResponse | null) => {
-  if (response) {
-    console.log('Received data:', response);
+// Creates an iframe for the target app inside the given container
+loomer.loadApplication('https://your-app.com', document.getElementById('preview'));
 
-    // Actual response structure:
-    // {
-    //   requestId: "randomId",
-    //   service: "skinweaver",
-    //   payload: { action: "listenCssVariables", ...cssData }
-    // }
-
-    // YOU process this data and build UI
-    buildYourThemeDesigner(response);
-  }
+// Ask the app for its CSS variables. The callback fires with the scraped
+// data, and again every time the app's stylesheets change.
+loomer.listenCssVariables((variables) => {
+  console.log('current theme:', variables);
+  // variables is keyed by host ("document", shadow-root tag names),
+  // then by CSS selector, then a list of { property, value } pairs.
 });
-
-// Request CSS variables from the loaded application
-function startListening() {
-  loomer.listenCssVariables(); // Sends PostMessage to iframe
-}
-
-// Example: Build your own theme designer UI
-function buildYourThemeDesigner(response: SDKResponse) {
-  // Extract data from the response payload
-  const cssData = response.payload;
-
-  // Create your own UI based on the received data
-  // YOU implement the color pickers, sliders, inputs, etc.
-  createCustomThemeControls(cssData);
-}
 ```
 
-#### Advanced Data Retrieval with Configuration
+Messages are queued until the iframe finishes loading, so you can call these
+immediately after `loadApplication` without waiting.
 
-```typescript
-import { Loomer, type SDKResponse } from '@neomorph/sdk';
+### Apply a theme
 
-const loomer = new Loomer({
-  // Custom iframe container
-  container: document.getElementById('preview-container'),
-
-  // Communication timeout
-  timeout: 5000,
-
-  // Enable debugging
-  debug: true
-});
-
-// Load application with error handling
-try {
-  await loomer.loadApplication('https://your-app.com', {
-    onLoad: () => console.log('Application loaded'),
-    onError: (error) => console.error('Load failed:', error),
-    onThemeChange: (variables) => console.log('Theme applied:', variables)
-  });
-
-  // Request available CSS variables
-  const response = await loomer.getCssVariables();
-
-  if (response.success) {
-    const { cssVariables, metadata } = response.data;
-
-    // Process and group the JSON data
-    const groupedVars = groupVariablesByCategory(cssVariables);
-
-    // Build your custom theme designer UI with the data
-    buildYourThemeDesignerUI(groupedVars);
-  }
-
-} catch (error) {
-  console.error('Integration failed:', error);
-}
-
-// Batch update multiple variables
-function applyTheme(theme: Record<string, string>) {
-  Object.entries(theme).forEach(([variable, value]) => {
-    loomer.updateCssVariable(variable, value);
-  });
-}
+```ts
+loomer.applyCssVariables(
+  {
+    document: {
+      '--color-primary': '#e11d48',
+      '--color-bg': '#0f172a'
+    }
+  },
+  /* persist */ true
+);
 ```
 
-## 🔒 Security Considerations
+The outer key is the host (`'document'` or a shadow-root host's tag name). Pass
+`persist: true` to save the theme to the target app's `localStorage` so it
+survives reloads.
 
-- **Cross-Origin Communication**: All PostMessage communication includes origin validation
-- **CSS Variable Exposure**: Only explicitly exposed variables are accessible via Weaver
-- **Iframe Sandboxing**: Consider appropriate iframe sandbox attributes for security
-- **Input Validation**: Always validate CSS variable values before applying
+### Reset, configure, tear down
 
-## 🐛 Troubleshooting
+```ts
+loomer.clearTheme();                       // remove overrides + clear persisted theme
+loomer.configure({ debounceMs: 500 });     // tune Weaver's runtime behavior
+loomer.teardown();                         // disconnect observers + listeners
+```
 
-### Common Issues
+### Inject the Weaver script programmatically
 
-**PostMessage not working**
-- Ensure both applications are served over HTTPS (or both over HTTP in development)
-- Check that iframe src and parent window origins are correctly configured
-- Verify that Weaver script is loaded before Loomer attempts communication
+If you control the target page, you can inject Weaver instead of adding a `<script>` tag by hand:
 
-**CSS Variables not detected**
-- Confirm variables are defined in `:root` or explicitly exposed via Weaver options
-- Check browser DevTools for CSS custom property support
-- Ensure variables use the `--` prefix
+```ts
+import { Weaver } from '@neomorph/sdk';
 
-**Cross-origin errors**
-- Verify CORS headers are properly configured on target application
-- Use appropriate iframe sandbox attributes
-- Consider using a proxy for local development
+Weaver.inject(); // appends the Weaver CDN script to document.head
+```
 
-## 🤝 Contributing
+## API reference
 
-See the main [repository README](../../README.md) for contribution guidelines.
+### `class Loomer`
 
-## 📄 License
+| Method | Description |
+|---|---|
+| `loadApplication(url, container?)` | Create an iframe for `url` inside `container` (defaults to `document.body`). |
+| `listenCssVariables(callback)` | Scrape the target's CSS variables; `callback` fires now and on every later change. |
+| `applyCssVariables(variables, persist?)` | Apply CSS variable overrides. `persist` saves them to the target's `localStorage`. |
+| `clearTheme()` | Remove all applied overrides and clear the persisted theme. |
+| `configure(config)` | Update Weaver's runtime config (e.g. `debounceMs`, `hostFilter`). |
+| `teardown()` | Disconnect Weaver's observers and listeners in the target app. |
 
-ISC - See [LICENSE](../../LICENSE) for details.
+### `class Weaver`
 
----
+| Method | Description |
+|---|---|
+| `Weaver.inject(version?)` | Append the Weaver script (from jsDelivr) to `document.head`. Defaults to the latest pinned version. |
 
-**Made with ❤️ by the Neomorph team**
+## How communication works
 
-For more information, visit the [main repository](https://github.com/sinha-sahil/neomorph).
+`Loomer` and the in-app Weaver script talk over the `postMessage` API. Every
+message is JSON with a `skinweaver` service identifier and a `requestId`.
+`Loomer` queues outgoing messages until the iframe's `load` event fires, then
+flushes them — so ordering and timing are handled for you:
+
+```mermaid
+sequenceDiagram
+    participant App as Your code
+    participant L as Loomer (SDK)
+    participant I as Target iframe
+    participant W as Weaver
+
+    App->>L: loadApplication(url, container)
+    L->>I: create iframe
+    App->>L: listenCssVariables(cb)
+    Note over L: iframe not ready —<br/>message is queued
+
+    I-->>L: iframe "load" event
+    L->>W: flush queued messages
+
+    W-->>L: scraped CSS variables
+    L->>App: cb(variables)
+
+    App->>L: applyCssVariables(overrides)
+    L->>W: applyCssVariables
+    W-->>L: applied ✓
+```
+
+## Security notes
+
+- **Origins** — messages are validated by service identifier. When embedding untrusted apps, also apply iframe `sandbox` attributes.
+- **Exposure** — only CSS variables actually present in the target's stylesheets are visible; Weaver does not expose anything else.
+- **Validation** — validate CSS values before calling `applyCssVariables` if they come from user input.
+
+## License
+
+ISC — see [LICENSE](../../LICENSE).

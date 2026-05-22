@@ -20,7 +20,7 @@ export type SDKPayloadPayload = Record<string, unknown>;
 
 export type SDKResponse = SDKPayload;
 
-export type StylesCallback = (val: HostStyles) => void;
+export type StylesCallback = (val: SDKPayloadPayload) => void;
 
 export function decodeCssProperty(rawInput: unknown): CSSProperty | null {
   if (isJSON(rawInput)) {

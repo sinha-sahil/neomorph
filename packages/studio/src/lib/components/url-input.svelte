@@ -20,7 +20,7 @@
 	let errorMessage = $state('');
 	let isLoading = $state(false);
 	let hasBlurred = $state(false);
-	let validationTimeout: number | null = null;
+	let validationTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	function normalizeUrl(url: string): string {
 		const trimmed = url.trim();
@@ -90,7 +90,7 @@
 		urlValue = target.value;
 
 		// Clear any existing timeout
-		if (validationTimeout) {
+		if (validationTimeout !== null) {
 			clearTimeout(validationTimeout);
 		}
 
@@ -138,7 +138,7 @@
 	}
 
 	onDestroy(() => {
-		if (validationTimeout) {
+		if (validationTimeout !== null) {
 			clearTimeout(validationTimeout);
 		}
 	});

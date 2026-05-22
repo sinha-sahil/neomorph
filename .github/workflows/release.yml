@@ -13,7 +13,7 @@ jobs:
     outputs:
       sdk-changed: ${{ steps.changes.outputs.sdk }}
       weaver-changed: ${{ steps.changes.outputs.weaver }}
-      loomer-changed: ${{ steps.changes.outputs.loomer }}
+      studio-changed: ${{ steps.changes.outputs.studio }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,15 +29,15 @@ jobs:
               - 'packages/sdk/**'
             weaver:
               - 'packages/weaver/**'
-            loomer:
-              - 'packages/loomer/**'
+            studio:
+              - 'packages/studio/**'
 
   release:
     needs: detect-changes
     if: |
       needs.detect-changes.outputs.sdk-changed == 'true' ||
       needs.detect-changes.outputs.weaver-changed == 'true' ||
-      needs.detect-changes.outputs.loomer-changed == 'true'
+      needs.detect-changes.outputs.studio-changed == 'true'
 
     runs-on: ubuntu-latest
     permissions:
@@ -172,15 +172,15 @@ jobs:
 
           echo "WEAVER_BUILT=true" >> $GITHUB_ENV
 
-      # Loomer Deployment to Vercel (DISABLED - will enable later)
-      - name: Deploy Loomer to Vercel
-        if: needs.detect-changes.outputs.loomer-changed == 'true'
+      # Studio Deployment to Vercel (DISABLED - will enable later)
+      - name: Deploy Studio to Vercel
+        if: needs.detect-changes.outputs.studio-changed == 'true'
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          cd packages/loomer
+          cd packages/studio
 
           # Install Vercel CLI
           npm install -g vercel
@@ -188,7 +188,7 @@ jobs:
           # Deploy to production
           vercel --prod --token $VERCEL_TOKEN
 
-          echo "LOOMER_DEPLOYED=true" >> $GITHUB_ENV
+          echo "STUDIO_DEPLOYED=true" >> $GITHUB_ENV
 
       # Commit version changes and create tags
       - name: Commit changes and create tags
