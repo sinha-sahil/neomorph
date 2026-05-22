@@ -56,13 +56,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10.18.0
 
       - name: Install dependencies
         run: pnpm install
@@ -105,13 +103,13 @@ jobs:
           # Bump version based on commit type
           case "${{ steps.commit-info.outputs.bump }}" in
             major)
-              NEW_VERSION=$(npm version major --no-git-tag-version)
+              NEW_VERSION=$(pnpm version major --no-git-tag-version)
               ;;
             minor)
-              NEW_VERSION=$(npm version minor --no-git-tag-version)
+              NEW_VERSION=$(pnpm version minor --no-git-tag-version)
               ;;
             patch)
-              NEW_VERSION=$(npm version patch --no-git-tag-version)
+              NEW_VERSION=$(pnpm version patch --no-git-tag-version)
               ;;
           esac
 
@@ -129,13 +127,14 @@ jobs:
           node -p "require('./package.json').version"
 
           # Check if version already exists on npm
-          if npm view @neomorph/sdk@$NEW_VERSION version 2>/dev/null; then
+          if pnpm view @neomorph/sdk@$NEW_VERSION version 2>/dev/null; then
             echo "Version $NEW_VERSION already exists on npm, skipping publish"
             echo "SDK_PUBLISHED=false" >> $GITHUB_ENV
           else
             echo "Publishing new version $NEW_VERSION to npm"
-            # Publish with explicit registry and access
-            npm publish --access public --registry https://registry.npmjs.org
+            # --no-git-checks lets pnpm publish from a dirty working tree
+            # (the version bump above leaves package.json modified)
+            pnpm publish --access public --registry https://registry.npmjs.org --no-git-checks
             echo "SDK_PUBLISHED=true" >> $GITHUB_ENV
           fi
 
@@ -152,13 +151,13 @@ jobs:
           # Bump version
           case "${{ steps.commit-info.outputs.bump }}" in
             major)
-              NEW_VERSION=$(npm version major --no-git-tag-version)
+              NEW_VERSION=$(pnpm version major --no-git-tag-version)
               ;;
             minor)
-              NEW_VERSION=$(npm version minor --no-git-tag-version)
+              NEW_VERSION=$(pnpm version minor --no-git-tag-version)
               ;;
             patch)
-              NEW_VERSION=$(npm version patch --no-git-tag-version)
+              NEW_VERSION=$(pnpm version patch --no-git-tag-version)
               ;;
           esac
 
@@ -172,7 +171,7 @@ jobs:
 
           echo "WEAVER_BUILT=true" >> $GITHUB_ENV
 
-      # Studio Deployment to Vercel (DISABLED - will enable later)
+      # Studio Deployment to Vercel
       - name: Deploy Studio to Vercel
         if: needs.detect-changes.outputs.studio-changed == 'true'
         env:
@@ -180,13 +179,15 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
+          # Build the studio with pnpm (workspaces resolve correctly here).
+          # adapter-vercel writes the deployable output to packages/studio/.vercel/output
+          pnpm build:studio
+
           cd packages/studio
 
-          # Install Vercel CLI
-          npm install -g vercel
-
-          # Deploy to production
-          vercel --prod --token $VERCEL_TOKEN
+          # Deploy the already-built output. --prebuilt skips install/build on Vercel's side.
+          # `pnpm dlx` fetches the Vercel CLI on demand (no global install needed).
+          pnpm dlx vercel deploy --prebuilt --prod --token "$VERCEL_TOKEN"
 
           echo "STUDIO_DEPLOYED=true" >> $GITHUB_ENV
 
@@ -195,22 +196,23 @@ jobs:
         run: |
           TAGS_TO_CREATE=""
 
-          # Add version changes to git and create tags only for successfully published packages
+          # Add version changes to git and create tags only for successfully published packages.
+          # Note: built artifacts live at repo-root `build/{sdk,weaver}/`, not under `packages/`.
           if [[ "${{ env.SDK_PUBLISHED }}" == "true" ]]; then
             git add packages/sdk/package.json
-            git add packages/build/sdk
+            git add build/sdk
             TAGS_TO_CREATE="$TAGS_TO_CREATE sdk/${{ env.SDK_NEW_VERSION }}"
           elif [[ "${{ env.SDK_PUBLISHED }}" == "false" ]]; then
             echo "Skipping SDK tag creation - version already exists on npm"
             # Still add build files if SDK was changed
             if [[ "${{ needs.detect-changes.outputs.sdk-changed }}" == "true" ]]; then
-              git add packages/build/sdk
+              git add build/sdk
             fi
           fi
 
           if [[ "${{ env.WEAVER_BUILT }}" == "true" ]]; then
             git add packages/weaver/package.json
-            git add packages/weaver/build/
+            git add build/weaver
             TAGS_TO_CREATE="$TAGS_TO_CREATE weaver/${{ env.WEAVER_NEW_VERSION }}"
           fi
 

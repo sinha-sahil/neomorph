@@ -1,3 +1,8 @@
 packages:
   - 'packages/*'
   - 'examples'
+
+# pnpm 11 setting — packages allowed to run install scripts.
+# (Replaces `pnpm.onlyBuiltDependencies` from package.json in pnpm <= 10.)
+allowBuilds:
+  esbuild: true

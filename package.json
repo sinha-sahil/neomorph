@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "description": "Advanced theme transformation toolkit for web applications",
   "type": "module",
-  "packageManager": "pnpm@10.18.0",
+  "packageManager": "pnpm@11.2.2",
   "scripts": {
     "build:all": "turbo build",
     "dev": "turbo dev",
@@ -34,10 +34,5 @@
     "globals": "^16.4.0",
     "turbo": "^2.3.3",
     "typescript-eslint": "^8.44.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ]
   }
 }
