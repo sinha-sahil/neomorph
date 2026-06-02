@@ -1,8 +1,3 @@
-export type CSSProperty = {
-  property: string;
-  value: string;
-};
-
 export type DocumentLike = Document | ShadowRoot;
 
 export type DocumentHost = {
@@ -10,19 +5,45 @@ export type DocumentHost = {
   target: DocumentLike;
 };
 
-export type HostStyles = Map<string, Array<CSSProperty>>;
-
-export type HostStyleEntry = {
+export type HostEntry = {
   name: string;
   target: DocumentLike;
-  styles: HostStyles;
+};
+export type HostMap = Map<string, HostEntry>;
+
+export type CssVariableKind =
+  | 'color'
+  | 'spacing'
+  | 'dimension'
+  | 'font-size'
+  | 'font-family'
+  | 'font-weight'
+  | 'line-height'
+  | 'radius'
+  | 'border-width'
+  | 'shadow'
+  | 'duration'
+  | 'z-index'
+  | 'opacity'
+  | 'number'
+  | 'length'
+  | 'alias'
+  | 'unknown';
+
+export type DefinedVariable = {
+  name: string;
+  value: string;
+  resolvedValue: string;
+  definedIn: string[];
+  consumedBy: string[];
+  kind: CssVariableKind;
 };
 
-export type HostStyleMap = Map<string, HostStyleEntry>;
+export type ScrapedHost = {
+  variables: DefinedVariable[];
+};
 
-export type ScrapedResult = Map<string, HostStyles>;
-
-export type SerializedHostStyles = Record<string, Record<string, unknown>>;
+export type ScrapedResult = Record<string, ScrapedHost>;
 
 export type MutationResponder = (result: ScrapedResult) => void;
 

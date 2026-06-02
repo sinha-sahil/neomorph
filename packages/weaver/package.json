@@ -31,9 +31,9 @@
   "bugs": {
     "url": "https://github.com/sinha-sahil/neomorph/issues"
   },
-  "packageManager": "pnpm@10.18.0",
+  "packageManager": "pnpm@11.2.2",
   "dependencies": {
-    "type-decoder": "^2.1.0"
+    "type-decoder": "^2.3.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",

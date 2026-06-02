@@ -25,6 +25,7 @@
 		"clean": "rm -rf .svelte-kit dist"
 	},
 	"dependencies": {
+		"@juspay/svelte-ui-components": "^2.19.2",
 		"@neomorph/sdk": "workspace:*"
 	},
 	"devDependencies": {

@@ -1,24 +1,39 @@
+// Scraping pipeline:
+//
+// 1. List hosts (document + shadow roots).
+// 2. Walk each host's stylesheets.
+// 3. Parse rule.style.cssText into declarations.
+// 4. `--name: value` → definition.
+// 5. `var(--x)` in any value → consumer of x.
+// 6. Resolve final values via getComputedStyle.
+// 7. Classify by consumer; fall back to value.
+// 8. Sort by name, return per host.
+
 import {
-  CSSProperty,
   CleanupFn,
+  CssVariableKind,
+  DefinedVariable,
   DocumentHost,
   DocumentLike,
-  HostStyles,
-  HostStyleMap,
+  HostEntry,
+  HostMap,
   MutationObserverConfig,
   MutationResponder,
+  ScrapedHost,
   ScrapedResult,
   TimerId,
   VoidCallback
 } from './types';
 import { getConfig, isApplying } from './state';
 
-const hostStyleMap: HostStyleMap = new Map();
+const hostMap: HostMap = new Map();
 
-export function getHostStyleMap(): HostStyleMap {
-  return hostStyleMap;
+// Cached host-name → DOM target lookup for the applier.
+export function getHostMap(): HostMap {
+  return hostMap;
 }
 
+// Trailing-edge debounce with a cancel hook.
 function debounce(fn: VoidCallback, delay: number): VoidCallback & { cancel: CleanupFn } {
   let timer: TimerId = null;
   return Object.assign(
@@ -42,26 +57,14 @@ function debounce(fn: VoidCallback, delay: number): VoidCallback & { cancel: Cle
   );
 }
 
-function containsCssVariable(value: string): boolean {
-  return value.startsWith('--') || value.includes('var(--');
-}
-
-function scrapeDocumentHosts(): Array<DocumentHost> {
-  const hosts: Array<DocumentHost> = [
-    {
-      name: 'document',
-      target: document
-    }
-  ];
+// Lists the main document plus every shadow-root host.
+function scrapeDocumentHosts(): DocumentHost[] {
+  const hosts: DocumentHost[] = [{ name: 'document', target: document }];
 
   const elements = document.querySelectorAll('*');
-
   for (const elem of elements) {
     if (elem.shadowRoot instanceof ShadowRoot) {
-      hosts.push({
-        name: elem.tagName,
-        target: elem.shadowRoot
-      });
+      hosts.push({ name: elem.tagName, target: elem.shadowRoot });
     }
   }
 
@@ -72,32 +75,225 @@ function scrapeDocumentHosts(): Array<DocumentHost> {
   return hosts;
 }
 
-function scrapeHostStyles(rootElement: DocumentLike): HostStyles {
-  const map: HostStyles = new Map();
+const VAR_REF_REGEX = /var\(\s*(--[\w-]+)/g;
+
+// Maps a consumer CSS property to a kind.
+function kindFromConsumer(prop: string): CssVariableKind | null {
+  if (
+    prop === 'color' ||
+    prop === 'fill' ||
+    prop === 'stroke' ||
+    prop === 'caret-color' ||
+    prop === 'accent-color' ||
+    prop === 'background' ||
+    prop.startsWith('background-color') ||
+    prop.endsWith('-color') ||
+    prop === 'outline-color' ||
+    prop === 'text-decoration-color'
+  ) {
+    return 'color';
+  }
+
+  if (
+    prop === 'border-width' ||
+    prop === 'border-top-width' ||
+    prop === 'border-right-width' ||
+    prop === 'border-bottom-width' ||
+    prop === 'border-left-width' ||
+    prop === 'outline-width'
+  ) {
+    return 'border-width';
+  }
+
+  if (prop === 'border-radius' || prop.endsWith('-radius')) {
+    return 'radius';
+  }
+
+  if (prop === 'box-shadow' || prop === 'text-shadow') {
+    return 'shadow';
+  }
+
+  if (
+    prop === 'padding' ||
+    prop.startsWith('padding-') ||
+    prop === 'margin' ||
+    prop.startsWith('margin-') ||
+    prop === 'gap' ||
+    prop === 'row-gap' ||
+    prop === 'column-gap' ||
+    prop === 'inset' ||
+    prop === 'top' ||
+    prop === 'right' ||
+    prop === 'bottom' ||
+    prop === 'left'
+  ) {
+    return 'spacing';
+  }
+
+  if (
+    prop === 'width' ||
+    prop === 'height' ||
+    prop === 'min-width' ||
+    prop === 'min-height' ||
+    prop === 'max-width' ||
+    prop === 'max-height'
+  ) {
+    return 'dimension';
+  }
+
+  if (prop === 'font-size') {
+    return 'font-size';
+  }
+  if (prop === 'font-family') {
+    return 'font-family';
+  }
+  if (prop === 'font-weight') {
+    return 'font-weight';
+  }
+  if (prop === 'line-height') {
+    return 'line-height';
+  }
+
+  if (
+    prop === 'transition-duration' ||
+    prop === 'animation-duration' ||
+    prop === 'transition-delay' ||
+    prop === 'animation-delay'
+  ) {
+    return 'duration';
+  }
+
+  if (prop === 'z-index') {
+    return 'z-index';
+  }
+  if (prop === 'opacity') {
+    return 'opacity';
+  }
+
+  return null;
+}
+
+const COLOR_VALUE_REGEX =
+  /^(#[0-9a-f]{3,8}|rgba?\(|hsla?\(|hwb\(|lab\(|lch\(|oklab\(|oklch\(|color\(|red|blue|green|black|white|gray|grey|orange|purple|yellow|pink|cyan|magenta|transparent|currentcolor)\b/i;
+const LENGTH_VALUE_REGEX = /^-?\d*\.?\d+(px|rem|em|%|vw|vh|vmin|vmax|ch|ex|pt|pc|cm|mm|in)$/i;
+const DURATION_VALUE_REGEX = /^-?\d*\.?\d+(ms|s)$/i;
+const NUMBER_VALUE_REGEX = /^-?\d*\.?\d+$/;
+const ALIAS_REGEX = /^var\(\s*--/;
+
+// Fallback kind, inferred from the value string alone.
+function kindFromValue(value: string): CssVariableKind {
+  const v = value.trim();
+  if (ALIAS_REGEX.test(v)) {
+    return 'alias';
+  }
+  if (COLOR_VALUE_REGEX.test(v)) {
+    return 'color';
+  }
+  if (DURATION_VALUE_REGEX.test(v)) {
+    return 'duration';
+  }
+  if (LENGTH_VALUE_REGEX.test(v)) {
+    return 'length';
+  }
+  if (NUMBER_VALUE_REGEX.test(v)) {
+    return 'number';
+  }
+  return 'unknown';
+}
+
+// Pick a kind from consumers, else from value.
+function classify(value: string, consumers: Set<string>): CssVariableKind {
+  for (const prop of consumers) {
+    const kind = kindFromConsumer(prop);
+    if (kind !== null) {
+      return kind;
+    }
+  }
+  return kindFromValue(value);
+}
+
+type DefRecord = { value: string; selectors: Set<string>; consumers: Set<string> };
+
+// Get or create the def record for a name.
+function ensureDef(defs: Map<string, DefRecord>, name: string): DefRecord {
+  const existing = defs.get(name);
+  if (typeof existing === 'object' && existing !== null) {
+    return existing;
+  }
+  const fresh: DefRecord = { value: '', selectors: new Set(), consumers: new Set() };
+  defs.set(name, fresh);
+  return fresh;
+}
+
+type Decl = { prop: string; value: string };
+
+// Splits cssText into prop/value pairs (paren-aware).
+// style.item(i) drops shorthand+var() values, so we parse the source.
+function parseDeclarations(cssText: string): Decl[] {
+  const out: Decl[] = [];
+  let depth = 0;
+  let buf = '';
+  for (let i = 0; i < cssText.length; i++) {
+    const ch = cssText.charAt(i);
+    if (ch === '(') {
+      depth++;
+    } else if (ch === ')') {
+      depth--;
+    }
+    if (ch === ';' && depth === 0) {
+      pushDecl(out, buf);
+      buf = '';
+    } else {
+      buf += ch;
+    }
+  }
+  pushDecl(out, buf);
+  return out;
+}
+
+// Trims and appends one declaration string.
+function pushDecl(out: Decl[], raw: string): void {
+  const trimmed = raw.trim();
+  if (trimmed.length === 0) {
+    return;
+  }
+  const colon = trimmed.indexOf(':');
+  if (colon <= 0) {
+    return;
+  }
+  const prop = trimmed.slice(0, colon).trim();
+  const value = trimmed.slice(colon + 1).trim();
+  if (prop.length === 0 || value.length === 0) {
+    return;
+  }
+  out.push({ prop, value });
+}
+
+// Builds the variable list for one host.
+function scrapeHost(rootElement: DocumentLike): ScrapedHost {
+  const defs = new Map<string, DefRecord>();
 
   try {
-    const styleSheets: StyleSheetList = rootElement.styleSheets;
-    for (const sheet of styleSheets) {
-      const cssRules: CSSRuleList = sheet.cssRules;
-      for (const rule of cssRules) {
+    for (const sheet of rootElement.styleSheets) {
+      for (const rule of sheet.cssRules) {
         if (!(rule instanceof CSSStyleRule)) {
           continue;
         }
-        const style: CSSStyleDeclaration = rule.style;
-        if (typeof style === 'object') {
-          const styleRecord = JSON.parse(JSON.stringify(style));
-          const variables: Array<CSSProperty> = [];
-          for (const prop in styleRecord) {
-            const value: string = styleRecord[prop];
-            if (value !== '' && containsCssVariable(value)) {
-              variables.push({
-                property: prop,
-                value: value
-              });
-            }
+        for (const decl of parseDeclarations(rule.style.cssText)) {
+          if (decl.prop.startsWith('--')) {
+            const rec = ensureDef(defs, decl.prop);
+            // Last write wins — matches the browser's cascade.
+            rec.value = decl.value;
+            rec.selectors.add(rule.selectorText);
           }
-          if (variables.length > 0) {
-            map.set(rule.selectorText, variables);
+
+          VAR_REF_REGEX.lastIndex = 0;
+          let match: RegExpExecArray | null;
+          while ((match = VAR_REF_REGEX.exec(decl.value)) !== null) {
+            const refName = match[1];
+            if (!decl.prop.startsWith('--')) {
+              ensureDef(defs, refName).consumers.add(decl.prop);
+            }
           }
         }
       }
@@ -106,29 +302,61 @@ function scrapeHostStyles(rootElement: DocumentLike): HostStyles {
     console.error('🕸️ Weaver: Error scraping CSS variables:', error);
   }
 
-  return map;
+  const computedSource = resolveComputedSource(rootElement);
+
+  const variables: DefinedVariable[] = [];
+  for (const [name, rec] of defs) {
+    if (rec.selectors.size === 0) {
+      continue;
+    }
+    const resolved =
+      computedSource === null ? rec.value : computedSource.getPropertyValue(name).trim();
+    variables.push({
+      name,
+      value: rec.value,
+      resolvedValue: resolved === '' ? rec.value : resolved,
+      definedIn: Array.from(rec.selectors),
+      consumedBy: Array.from(rec.consumers),
+      kind: classify(rec.value, rec.consumers)
+    });
+  }
+
+  variables.sort((a, b) => a.name.localeCompare(b.name));
+
+  return { variables };
 }
 
+// ComputedStyle source for resolving var() aliases.
+function resolveComputedSource(rootElement: DocumentLike): CSSStyleDeclaration | null {
+  if (rootElement instanceof ShadowRoot) {
+    const host = rootElement.host;
+    if (host instanceof Element) {
+      return getComputedStyle(host);
+    }
+    return null;
+  }
+  return getComputedStyle(rootElement.documentElement);
+}
+
+// Scrape every host, refresh the host map, return the result.
 export function scrapeCssVariables(): ScrapedResult {
   const hosts = scrapeDocumentHosts();
-  const result: ScrapedResult = new Map();
+  const result: ScrapedResult = {};
+
   hosts.forEach((host) => {
-    const styles = scrapeHostStyles(host.target);
-    result.set(host.name, styles);
-    hostStyleMap.set(host.name, {
-      name: host.name,
-      target: host.target,
-      styles: styles
-    });
+    result[host.name] = scrapeHost(host.target);
+    const entry: HostEntry = { name: host.name, target: host.target };
+    hostMap.set(host.name, entry);
   });
 
   return result;
 }
 
+// Re-scrape on DOM changes (debounced).
 export function scrapeOnMutation(responder: MutationResponder): CleanupFn {
   const hosts = scrapeDocumentHosts();
   const config: MutationObserverConfig = { attributes: false, childList: true, subtree: false };
-  const observers: Array<MutationObserver> = [];
+  const observers: MutationObserver[] = [];
 
   const callback = debounce(() => {
     if (isApplying()) {

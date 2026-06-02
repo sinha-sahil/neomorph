@@ -1,103 +1,40 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://rsms.me/inter/inter.css');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import './lib/theme/tokens.css';
+@import './lib/theme/components.css';
 
-/* Import light theme as default */
-@import './themes/light-theme.css';
-
-* {
-	font-family: 'Poppins', sans-serif;
+*,
+*::before,
+*::after {
 	box-sizing: border-box;
 }
 
-/* Base theme setup */
-:root {
-	color-scheme: light dark;
-}
-
-/* Dark theme for onboarding container */
-[data-theme="dark"] .onboarding-container {
-	background: linear-gradient(to bottom, #0f172a, #1e293b);
-}
-
-/* URL Input dark theme support */
-[data-theme="dark"] .url-input {
-	background: #1e293b;
-	border-color: #334155;
-	color: #e2e8f0;
-}
-
-[data-theme="dark"] .url-input:focus {
-	border-color: #7c3aed;
-	box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
-}
-
-[data-theme="dark"] .url-input.valid {
-	border-color: #10b981;
-}
-
-[data-theme="dark"] .url-input.error {
-	border-color: #ef4444;
-}
-
-[data-theme="dark"] .url-input::placeholder {
-	color: #64748b;
-}
-
-/* Submit button dark theme */
-[data-theme="dark"] .submit-button {
-	background: #7c3aed;
-	color: white;
-}
-
-[data-theme="dark"] .submit-button:hover:not(:disabled) {
-	background: #6d28d9;
-}
-
-[data-theme="dark"] .submit-button:disabled {
-	background: #475569;
-}
-
-/* Help text dark theme */
-[data-theme="dark"] .help-text {
-	background: rgba(124, 58, 237, 0.1);
-	border-color: rgba(124, 58, 237, 0.2);
-}
-
-[data-theme="dark"] .help-text p {
-	color: #94a3b8;
-}
-
-[data-theme="dark"] .help-link {
-	color: #a855f7;
-}
-
-[data-theme="dark"] .help-link:hover {
-	color: #c084fc;
-}
-
-/* Editor container dark theme */
-[data-theme="dark"] .editor-container {
-	background: #0f172a;
-	color: #e2e8f0;
-}
-
-[data-theme="dark"] .editor-container h1 {
-	color: #f8fafc;
-}
-
-[data-theme="dark"] .editor-container p {
-	color: #94a3b8;
-}
-
-[data-theme="dark"] .editor-container button {
-	background: #7c3aed;
-	color: white;
-}
-
-[data-theme="dark"] .editor-container button:hover {
-	background: #6d28d9;
-}
-
-
+html,
 body {
-    margin: 0;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	overflow: hidden;
+	font-family:
+		'Inter',
+		system-ui,
+		-apple-system,
+		sans-serif;
+	font-feature-settings: 'cv11', 'ss01';
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+	background: var(--bg-app);
+	color: var(--text);
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+button {
+	font: inherit;
+}
+
+::selection {
+	background: var(--accent-soft);
+	color: var(--text);
 }

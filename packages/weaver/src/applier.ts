@@ -1,18 +1,18 @@
-import { CssVariableOverrides, HostStyleMap, ApplyResult } from './types';
+import { ApplyResult, CssVariableOverrides, HostMap } from './types';
 import { setApplying } from './state';
 
 const WEAVER_STYLE_ID = '__neomorph-weaver-overrides';
 
 export function applyCssVariables(
   variables: CssVariableOverrides,
-  hostStyleMap: HostStyleMap
+  hostMap: HostMap
 ): ApplyResult {
   setApplying(true);
   const applied: ApplyResult = {};
 
   try {
     for (const [hostName, vars] of Object.entries(variables)) {
-      const appliedVars: Array<string> = [];
+      const appliedVars: string[] = [];
 
       if (hostName === 'document') {
         for (const [varName, value] of Object.entries(vars)) {
@@ -20,13 +20,8 @@ export function applyCssVariables(
           appliedVars.push(varName);
         }
       } else {
-        for (const [entryName, hostEntry] of hostStyleMap) {
-          if (entryName !== hostName) {
-            continue;
-          }
-          if (!(hostEntry.target instanceof ShadowRoot)) {
-            continue;
-          }
+        const hostEntry = hostMap.get(hostName);
+        if (typeof hostEntry === 'object' && hostEntry !== null && hostEntry.target instanceof ShadowRoot) {
           let styleEl = hostEntry.target.getElementById(WEAVER_STYLE_ID);
           if (styleEl === null) {
             styleEl = document.createElement('style');
@@ -52,14 +47,14 @@ export function applyCssVariables(
   return applied;
 }
 
-export function clearAppliedVariables(hostStyleMap: HostStyleMap): void {
+export function clearAppliedVariables(hostMap: HostMap): void {
   setApplying(true);
 
   try {
     const rootStyle = document.documentElement.style;
-    const propsToRemove: Array<string> = [];
+    const propsToRemove: string[] = [];
     for (let i = 0; i < rootStyle.length; i++) {
-      const prop = rootStyle[i];
+      const prop = rootStyle.item(i);
       if (prop.startsWith('--')) {
         propsToRemove.push(prop);
       }
@@ -68,7 +63,7 @@ export function clearAppliedVariables(hostStyleMap: HostStyleMap): void {
       rootStyle.removeProperty(prop);
     }
 
-    for (const [, hostEntry] of hostStyleMap) {
+    for (const [, hostEntry] of hostMap) {
       if (hostEntry.target instanceof ShadowRoot) {
         const styleEl = hostEntry.target.getElementById(WEAVER_STYLE_ID);
         if (styleEl !== null) {

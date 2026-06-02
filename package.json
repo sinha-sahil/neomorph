@@ -22,7 +22,7 @@
     "dev:cdn": "turbo dev:cdn --filter=@neomorph/sdk",
     "preview:studio": "turbo preview --filter=@neomorph/studio",
     "check:watch": "turbo check:watch --filter=@neomorph/studio",
-    "example": "pnpm --filter @neomorph/examples dev"
+    "dev:example": "pnpm --filter @neomorph/examples dev"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

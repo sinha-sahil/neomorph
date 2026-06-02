@@ -5,21 +5,17 @@ import {
   CssVariableMap,
   CssVariableOverrides,
   MessageListener,
-  ScrapedResult,
   SDKPayload,
   SDKPayloadPayload,
-  SDKResponse,
-  SerializedHostStyles
+  SDKResponse
 } from './types';
 import { getConfig, updateConfig } from './state';
-import { scrapeCssVariables, scrapeOnMutation, getHostStyleMap } from './scraper';
+import { scrapeCssVariables, scrapeOnMutation, getHostMap } from './scraper';
 import { applyCssVariables, clearAppliedVariables } from './applier';
 import { saveTheme, clearTheme } from './storage';
 
 let messageListener: MessageListener | null = null;
 let mutationCleanup: CleanupFn | null = null;
-
-/* ---------- decoders ---------- */
 
 function safeParseJson(jsonString: string): unknown {
   try {
@@ -86,8 +82,6 @@ function decodeApplyCssVariablesPayload(rawInput: unknown): ApplyCssVariablesPay
   };
 }
 
-/* ---------- listener ---------- */
-
 export function setupListener(): void {
   messageListener = (event: MessageEvent) => {
     parseAndHandle(event);
@@ -121,16 +115,6 @@ function respond(response: SDKResponse): void {
   }
 }
 
-/* ---------- handler ---------- */
-
-function serializeHostStylesMap(result: ScrapedResult): SerializedHostStyles {
-  const outer: SerializedHostStyles = {};
-  for (const [hostName, hostStyles] of result) {
-    outer[hostName] = Object.fromEntries(hostStyles);
-  }
-  return outer;
-}
-
 function handleSdkPayload(sdkPayload: SDKPayload): void {
   const action = sdkPayload.payload.action;
 
@@ -138,7 +122,7 @@ function handleSdkPayload(sdkPayload: SDKPayload): void {
     respond({
       requestId: sdkPayload.requestId,
       service: sdkPayload.service,
-      payload: serializeHostStylesMap(scrapeCssVariables())
+      payload: scrapeCssVariables()
     });
 
     if (mutationCleanup !== null) {
@@ -148,13 +132,13 @@ function handleSdkPayload(sdkPayload: SDKPayload): void {
       respond({
         requestId: sdkPayload.requestId,
         service: sdkPayload.service,
-        payload: serializeHostStylesMap(mutationResult)
+        payload: mutationResult
       });
     });
   } else if (action === 'applyCssVariables') {
     const decoded = decodeApplyCssVariablesPayload(sdkPayload.payload);
     if (decoded !== null) {
-      const applied = applyCssVariables(decoded.variables, getHostStyleMap());
+      const applied = applyCssVariables(decoded.variables, getHostMap());
       if (decoded.persist || getConfig().persistByDefault) {
         saveTheme(decoded.variables);
       }
@@ -165,7 +149,7 @@ function handleSdkPayload(sdkPayload: SDKPayload): void {
       });
     }
   } else if (action === 'clearTheme') {
-    clearAppliedVariables(getHostStyleMap());
+    clearAppliedVariables(getHostMap());
     clearTheme();
     respond({
       requestId: sdkPayload.requestId,

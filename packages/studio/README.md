@@ -2,7 +2,7 @@
 
 **Neomorph Studio** — a ready-made visual theme designer. Point it at any web app that runs the [Weaver](../weaver) script and edit that app's theme in a live split-view: preview on the left, CSS variables on the right.
 
-Studio is a SvelteKit app built on top of [`@neomorph/sdk`](../sdk). It is one possible designer surface — if you want theming inside your *own* product instead of a standalone app, use the SDK directly.
+Studio is a SvelteKit app built on top of [`@neomorph/sdk`](../sdk). It is one possible designer surface — if you want theming inside your _own_ product instead of a standalone app, use the SDK directly.
 
 ## What it does
 

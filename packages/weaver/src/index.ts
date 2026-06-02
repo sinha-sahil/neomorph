@@ -1,7 +1,7 @@
 import { setupListener, teardown } from './messaging';
 import { loadConfigFromWindow } from './state';
 import { loadTheme } from './storage';
-import { scrapeCssVariables, getHostStyleMap } from './scraper';
+import { scrapeCssVariables, getHostMap } from './scraper';
 import { applyCssVariables } from './applier';
 
 export { teardown };
@@ -25,7 +25,7 @@ function restoreTheme() {
   }
 
   scrapeCssVariables();
-  applyCssVariables(theme, getHostStyleMap());
+  applyCssVariables(theme, getHostMap());
   console.log('🕸️ Weaver: Restored saved theme');
 }
 

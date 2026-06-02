@@ -100,21 +100,23 @@ jobs:
           CURRENT_VERSION=$(node -p "require('./package.json').version")
           echo "Current SDK version: $CURRENT_VERSION"
 
-          # Bump version based on commit type
+          # Bump version based on commit type.
+          # NOTE: pnpm version prints a multi-line human message ("Version bumped
+          # successfully: ..."), NOT the bare version like npm does. Don't capture
+          # its stdout — read the bumped version back from package.json instead.
           case "${{ steps.commit-info.outputs.bump }}" in
             major)
-              NEW_VERSION=$(pnpm version major --no-git-tag-version)
+              pnpm version major --no-git-tag-version
               ;;
             minor)
-              NEW_VERSION=$(pnpm version minor --no-git-tag-version)
+              pnpm version minor --no-git-tag-version
               ;;
             patch)
-              NEW_VERSION=$(pnpm version patch --no-git-tag-version)
+              pnpm version patch --no-git-tag-version
               ;;
           esac
 
-          # Remove 'v' prefix from version
-          NEW_VERSION=${NEW_VERSION#v}
+          NEW_VERSION=$(node -p "require('./package.json').version")
           echo "New SDK version: $NEW_VERSION"
           echo "SDK_NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
@@ -148,21 +150,20 @@ jobs:
           CURRENT_VERSION=$(node -p "require('./package.json').version")
           echo "Current Weaver version: $CURRENT_VERSION"
 
-          # Bump version
+          # Bump version (see SDK step: read version from package.json, not pnpm stdout)
           case "${{ steps.commit-info.outputs.bump }}" in
             major)
-              NEW_VERSION=$(pnpm version major --no-git-tag-version)
+              pnpm version major --no-git-tag-version
               ;;
             minor)
-              NEW_VERSION=$(pnpm version minor --no-git-tag-version)
+              pnpm version minor --no-git-tag-version
               ;;
             patch)
-              NEW_VERSION=$(pnpm version patch --no-git-tag-version)
+              pnpm version patch --no-git-tag-version
               ;;
           esac
 
-          # Remove 'v' prefix from version
-          NEW_VERSION=${NEW_VERSION#v}
+          NEW_VERSION=$(node -p "require('./package.json').version")
           echo "New Weaver version: $NEW_VERSION"
           echo "WEAVER_NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
