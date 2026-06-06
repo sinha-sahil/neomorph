@@ -7,7 +7,8 @@ import packageJson from "./package.json" with { type: "json" };
 
 const processArguments = process.argv;
 let buildTarget = "cdn" | "nodePackage";
-const isDev = process.env.NODE_ENV === "development" || process.env.ROLLUP_WATCH;
+const isDev =
+  process.env.NODE_ENV === "development" || process.env.ROLLUP_WATCH;
 
 processArguments.forEach((arg) => {
   if (arg.includes("buildType=cdn")) {
@@ -51,7 +52,8 @@ function config() {
                 contentBase: "../../build/sdk",
                 headers: {
                   "Access-Control-Allow-Origin": "*",
-                  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                  "Access-Control-Allow-Methods":
+                    "GET, POST, PUT, DELETE, OPTIONS",
                   "Access-Control-Allow-Headers": "Content-Type, Authorization",
                 },
               }),

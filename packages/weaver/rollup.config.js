@@ -14,7 +14,7 @@ export default [
     input: 'src/index.ts',
     output: {
       file: `../../build/weaver/${packageJson.version}/index.js`,
-      format: 'esm',
+      format: 'iife',
       sourcemap: false
     },
     plugins: [
@@ -35,7 +35,7 @@ export default [
       ...(isDev
         ? [
             serve({
-              contentBase: 'dist',
+              contentBase: `../../build/weaver/${packageJson.version}`,
               port: 9898,
               headers: {
                 'Access-Control-Allow-Origin': '*',

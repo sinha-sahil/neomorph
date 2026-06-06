@@ -1,12 +1,55 @@
-import { ApplyResult, CssVariableOverrides, HostMap } from './types';
+import { ApplyResult, CssVariableMap, CssVariableOverrides, HostMap } from './types';
 import { setApplying } from './state';
 
 const WEAVER_STYLE_ID = '__neomorph-weaver-overrides';
+const ELEMENT_STYLE_ID = '__neomorph-element-overrides';
 
-export function applyCssVariables(
-  variables: CssVariableOverrides,
-  hostMap: HostMap
-): ApplyResult {
+// Per-element style overrides, keyed by the inspector's data-neomorph-id.
+const elementOverrides = new Map<string, CssVariableMap>();
+
+function rebuildElementOverrides(): void {
+  let styleEl = document.getElementById(ELEMENT_STYLE_ID);
+  if (styleEl === null) {
+    styleEl = document.createElement('style');
+    styleEl.id = ELEMENT_STYLE_ID;
+    document.head.appendChild(styleEl);
+  }
+  let css = '';
+  for (const [id, decls] of elementOverrides) {
+    const body = Object.entries(decls)
+      .map(([prop, value]) => `${prop}: ${value};`)
+      .join(' ');
+    css += `[data-neomorph-id="${id}"] { ${body} }\n`;
+  }
+  styleEl.textContent = css;
+}
+
+export function applyElementOverride(elementId: string, declarations: CssVariableMap): void {
+  setApplying(true);
+  try {
+    const current = elementOverrides.get(elementId) ?? {};
+    elementOverrides.set(elementId, { ...current, ...declarations });
+    rebuildElementOverrides();
+  } finally {
+    setTimeout(() => {
+      setApplying(false);
+    }, 0);
+  }
+}
+
+export function clearElementOverride(elementId: string): void {
+  setApplying(true);
+  try {
+    elementOverrides.delete(elementId);
+    rebuildElementOverrides();
+  } finally {
+    setTimeout(() => {
+      setApplying(false);
+    }, 0);
+  }
+}
+
+export function applyCssVariables(variables: CssVariableOverrides, hostMap: HostMap): ApplyResult {
   setApplying(true);
   const applied: ApplyResult = {};
 
@@ -21,7 +64,11 @@ export function applyCssVariables(
         }
       } else {
         const hostEntry = hostMap.get(hostName);
-        if (typeof hostEntry === 'object' && hostEntry !== null && hostEntry.target instanceof ShadowRoot) {
+        if (
+          typeof hostEntry === 'object' &&
+          hostEntry !== null &&
+          hostEntry.target instanceof ShadowRoot
+        ) {
           let styleEl = hostEntry.target.getElementById(WEAVER_STYLE_ID);
           if (styleEl === null) {
             styleEl = document.createElement('style');

@@ -8,12 +8,12 @@ The SDK has no UI of its own. [Neomorph Studio](../studio) is a visual designer 
 
 The SDK exports two classes:
 
-| Class | Side | Responsibility |
-|---|---|---|
+| Class    | Side                          | Responsibility                                                                                               |
+| -------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | `Loomer` | Designer side (parent window) | Loads a target app in an iframe and drives it: scrape variables, apply a theme, reset, configure, tear down. |
-| `Weaver` | Designer side | One helper — injects the Weaver script into a page from the CDN. |
+| `Weaver` | Designer side                 | One helper — injects the Weaver script into a page from the CDN.                                             |
 
-> **Naming note:** `Loomer` is the *controller class*. "Studio" is the separate ready-made *app*. You use `Loomer`; Studio uses it too.
+> **Naming note:** `Loomer` is the _controller class_. "Studio" is the separate ready-made _app_. You use `Loomer`; Studio uses it too.
 
 The target app itself runs the [`@neomorph/weaver`](../weaver) script — that's a separate package, loaded inside the app being themed, not imported here.
 
@@ -34,17 +34,20 @@ The target app must theme itself with CSS custom properties (`--color-primary`, 
 ### Load a target app and read its theme
 
 ```ts
-import { Loomer } from '@neomorph/sdk';
+import { Loomer } from "@neomorph/sdk";
 
 const loomer = new Loomer();
 
 // Creates an iframe for the target app inside the given container
-loomer.loadApplication('https://your-app.com', document.getElementById('preview'));
+loomer.loadApplication(
+  "https://your-app.com",
+  document.getElementById("preview"),
+);
 
 // Ask the app for its CSS variables. The callback fires with the scraped
 // data, and again every time the app's stylesheets change.
 loomer.listenCssVariables((variables) => {
-  console.log('current theme:', variables);
+  console.log("current theme:", variables);
   // variables is keyed by host ("document", shadow-root tag names),
   // then by CSS selector, then a list of { property, value } pairs.
 });
@@ -59,11 +62,11 @@ immediately after `loadApplication` without waiting.
 loomer.applyCssVariables(
   {
     document: {
-      '--color-primary': '#e11d48',
-      '--color-bg': '#0f172a'
-    }
+      "--color-primary": "#e11d48",
+      "--color-bg": "#0f172a",
+    },
   },
-  /* persist */ true
+  /* persist */ true,
 );
 ```
 
@@ -74,9 +77,9 @@ survives reloads.
 ### Reset, configure, tear down
 
 ```ts
-loomer.clearTheme();                       // remove overrides + clear persisted theme
-loomer.configure({ debounceMs: 500 });     // tune Weaver's runtime behavior
-loomer.teardown();                         // disconnect observers + listeners
+loomer.clearTheme(); // remove overrides + clear persisted theme
+loomer.configure({ debounceMs: 500 }); // tune Weaver's runtime behavior
+loomer.teardown(); // disconnect observers + listeners
 ```
 
 ### Inject the Weaver script programmatically
@@ -84,7 +87,7 @@ loomer.teardown();                         // disconnect observers + listeners
 If you control the target page, you can inject Weaver instead of adding a `<script>` tag by hand:
 
 ```ts
-import { Weaver } from '@neomorph/sdk';
+import { Weaver } from "@neomorph/sdk";
 
 Weaver.inject(); // appends the Weaver CDN script to document.head
 ```
@@ -93,19 +96,19 @@ Weaver.inject(); // appends the Weaver CDN script to document.head
 
 ### `class Loomer`
 
-| Method | Description |
-|---|---|
-| `loadApplication(url, container?)` | Create an iframe for `url` inside `container` (defaults to `document.body`). |
-| `listenCssVariables(callback)` | Scrape the target's CSS variables; `callback` fires now and on every later change. |
+| Method                                   | Description                                                                        |
+| ---------------------------------------- | ---------------------------------------------------------------------------------- |
+| `loadApplication(url, container?)`       | Create an iframe for `url` inside `container` (defaults to `document.body`).       |
+| `listenCssVariables(callback)`           | Scrape the target's CSS variables; `callback` fires now and on every later change. |
 | `applyCssVariables(variables, persist?)` | Apply CSS variable overrides. `persist` saves them to the target's `localStorage`. |
-| `clearTheme()` | Remove all applied overrides and clear the persisted theme. |
-| `configure(config)` | Update Weaver's runtime config (e.g. `debounceMs`, `hostFilter`). |
-| `teardown()` | Disconnect Weaver's observers and listeners in the target app. |
+| `clearTheme()`                           | Remove all applied overrides and clear the persisted theme.                        |
+| `configure(config)`                      | Update Weaver's runtime config (e.g. `debounceMs`, `hostFilter`).                  |
+| `teardown()`                             | Disconnect Weaver's observers and listeners in the target app.                     |
 
 ### `class Weaver`
 
-| Method | Description |
-|---|---|
+| Method                    | Description                                                                                         |
+| ------------------------- | --------------------------------------------------------------------------------------------------- |
 | `Weaver.inject(version?)` | Append the Weaver script (from jsDelivr) to `document.head`. Defaults to the latest pinned version. |
 
 ## How communication works

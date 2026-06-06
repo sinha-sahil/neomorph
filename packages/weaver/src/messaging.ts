@@ -11,8 +11,29 @@ import {
 } from './types';
 import { getConfig, updateConfig } from './state';
 import { scrapeCssVariables, scrapeOnMutation, getHostMap } from './scraper';
-import { applyCssVariables, clearAppliedVariables } from './applier';
+import {
+  applyCssVariables,
+  applyElementOverride,
+  clearAppliedVariables,
+  clearElementOverride
+} from './applier';
+import { disableInspector, enableInspector, queryElementRect } from './inspector';
 import { saveTheme, clearTheme } from './storage';
+
+function decodeStringMap(rawInput: unknown): CssVariableMap | null {
+  if (!isJSON(rawInput)) {
+    return null;
+  }
+  const out: CssVariableMap = {};
+  for (const key in rawInput) {
+    const value = decodeString(rawInput[key]);
+    if (value === null) {
+      return null;
+    }
+    out[key] = value;
+  }
+  return out;
+}
 
 let messageListener: MessageListener | null = null;
 let mutationCleanup: CleanupFn | null = null;
@@ -166,6 +187,36 @@ function handleSdkPayload(sdkPayload: SDKPayload): void {
         payload: { action: 'configure', config: getConfig() }
       });
     }
+  } else if (action === 'enableInspector') {
+    enableInspector((payload) => {
+      respond({
+        requestId: sdkPayload.requestId,
+        service: sdkPayload.service,
+        payload
+      });
+    });
+  } else if (action === 'disableInspector') {
+    disableInspector();
+  } else if (action === 'queryElementRect') {
+    const rect = queryElementRect();
+    if (rect !== null) {
+      respond({
+        requestId: sdkPayload.requestId,
+        service: sdkPayload.service,
+        payload: { action: 'elementRect', rect }
+      });
+    }
+  } else if (action === 'applyElementOverride') {
+    const elementId = decodeString(sdkPayload.payload['elementId']);
+    const declarations = decodeStringMap(sdkPayload.payload['declarations']);
+    if (elementId !== null && declarations !== null) {
+      applyElementOverride(elementId, declarations);
+    }
+  } else if (action === 'clearElementOverride') {
+    const elementId = decodeString(sdkPayload.payload['elementId']);
+    if (elementId !== null) {
+      clearElementOverride(elementId);
+    }
   } else if (action === 'teardown') {
     teardown();
     respond({
@@ -185,4 +236,5 @@ export function teardown(): void {
     mutationCleanup();
     mutationCleanup = null;
   }
+  disableInspector();
 }
