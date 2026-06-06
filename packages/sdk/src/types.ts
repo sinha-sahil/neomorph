@@ -57,7 +57,7 @@ export function decodeSDKPayload(rawInput: unknown): SDKPayload | null {
 }
 
 export function decodeSDKPayloadPayload(
-  rawInput: unknown
+  rawInput: unknown,
 ): SDKPayloadPayload | null {
   if (isJSON(rawInput)) {
     return {

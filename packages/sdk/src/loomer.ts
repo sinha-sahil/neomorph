@@ -11,12 +11,14 @@ function safeJsonParse(input: string): unknown {
 export class Loomer {
   private applicationFrame: HTMLIFrameElement | null;
   private callbacks: Array<StylesCallback>;
+  private actionHandlers: Map<string, Array<StylesCallback>>;
   private ready: boolean;
   private pendingMessages: Array<Record<string, unknown>>;
 
   constructor() {
     this.applicationFrame = null;
     this.callbacks = [];
+    this.actionHandlers = new Map();
     this.ready = false;
     this.pendingMessages = [];
   }
@@ -44,10 +46,16 @@ export class Loomer {
         if (decodedResponse === null) {
           return;
         }
-        if ("action" in decodedResponse.payload) {
+        const payload = decodedResponse.payload;
+        const action = payload["action"];
+        if (typeof action === "string") {
+          const handlers = this.actionHandlers.get(action);
+          if (handlers instanceof Array) {
+            handlers.forEach((handler) => handler(payload));
+          }
           return;
         }
-        this.callbacks.forEach((cb) => cb(decodedResponse.payload));
+        this.callbacks.forEach((cb) => cb(payload));
       });
     } catch (error: unknown) {
       console.error("Loomer: Failed to load application:", error);
@@ -111,6 +119,61 @@ export class Loomer {
 
   configure(config: Record<string, unknown>): void {
     this.sendMessage({ action: "configure", config });
+  }
+
+  on(action: string, callback: StylesCallback): () => void {
+    const existing = this.actionHandlers.get(action);
+    const list = existing instanceof Array ? existing : [];
+    list.push(callback);
+    this.actionHandlers.set(action, list);
+    return () => {
+      const current = this.actionHandlers.get(action);
+      if (current instanceof Array) {
+        this.actionHandlers.set(
+          action,
+          current.filter((entry) => entry !== callback),
+        );
+      }
+    };
+  }
+
+  enableInspector(): void {
+    this.sendMessage({ action: "enableInspector" });
+  }
+
+  disableInspector(): void {
+    this.sendMessage({ action: "disableInspector" });
+  }
+
+  queryElementRect(): void {
+    this.sendMessage({ action: "queryElementRect" });
+  }
+
+  onElementSelected(callback: StylesCallback): () => void {
+    return this.on("elementSelected", callback);
+  }
+
+  onElementRect(callback: StylesCallback): () => void {
+    return this.on("elementRect", callback);
+  }
+
+  applyElementOverride(
+    elementId: string,
+    declarations: Record<string, string>,
+  ): void {
+    this.sendMessage({
+      action: "applyElementOverride",
+      elementId,
+      declarations,
+    });
+  }
+
+  clearElementOverride(elementId: string): void {
+    this.sendMessage({ action: "clearElementOverride", elementId });
+  }
+
+  getFrame(): HTMLIFrameElement | null {
+    return this.applicationFrame;
   }
 
   teardown(): void {

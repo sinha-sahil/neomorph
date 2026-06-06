@@ -1,10 +1,8 @@
-import { setupListener, teardown } from './messaging';
+import { setupListener } from './messaging';
 import { loadConfigFromWindow } from './state';
 import { loadTheme } from './storage';
 import { scrapeCssVariables, getHostMap } from './scraper';
 import { applyCssVariables } from './applier';
-
-export { teardown };
 
 function initWeaver() {
   try {

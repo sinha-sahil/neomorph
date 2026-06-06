@@ -93,3 +93,29 @@ export type WeaverConfig = {
   persistByDefault: boolean;
   hostFilter: string[] | null;
 };
+
+export type ElementRect = {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+};
+
+export type RelevantVariable = {
+  varName: string;
+  property: string;
+  resolvedValue: string;
+};
+
+export type SelectedElementDescriptor = {
+  elementId: string;
+  tagName: string;
+  id: string;
+  classNames: string[];
+  rect: ElementRect;
+  hostName: string;
+  computedStyles: Record<string, string>;
+  relevantVariables: RelevantVariable[];
+};
+
+export type InspectorEmit = (payload: SDKPayloadPayload) => void;

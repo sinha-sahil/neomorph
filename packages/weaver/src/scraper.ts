@@ -75,7 +75,7 @@ function scrapeDocumentHosts(): DocumentHost[] {
   return hosts;
 }
 
-const VAR_REF_REGEX = /var\(\s*(--[\w-]+)/g;
+export const VAR_REF_REGEX = /var\(\s*(--[\w-]+)/g;
 
 // Maps a consumer CSS property to a kind.
 function kindFromConsumer(prop: string): CssVariableKind | null {
@@ -229,7 +229,7 @@ type Decl = { prop: string; value: string };
 
 // Splits cssText into prop/value pairs (paren-aware).
 // style.item(i) drops shorthand+var() values, so we parse the source.
-function parseDeclarations(cssText: string): Decl[] {
+export function parseDeclarations(cssText: string): Decl[] {
   const out: Decl[] = [];
   let depth = 0;
   let buf = '';
@@ -269,37 +269,93 @@ function pushDecl(out: Decl[], raw: string): void {
   out.push({ prop, value });
 }
 
+// A host's regular stylesheets plus its adopted (constructable) ones, which
+// are a separate collection from `.styleSheets` (used by Lit/web-component
+// design systems and not visible otherwise).
+function collectStyleSheets(rootElement: DocumentLike): CSSStyleSheet[] {
+  const sheets: CSSStyleSheet[] = [];
+  for (const sheet of rootElement.styleSheets) {
+    sheets.push(sheet);
+  }
+  const adopted = rootElement.adoptedStyleSheets;
+  if (Array.isArray(adopted)) {
+    for (const sheet of adopted) {
+      sheets.push(sheet);
+    }
+  }
+  return sheets;
+}
+
+// Records definitions + consumers from a single style rule.
+function collectFromStyleRule(rule: CSSStyleRule, defs: Map<string, DefRecord>): void {
+  for (const decl of parseDeclarations(rule.style.cssText)) {
+    if (decl.prop.startsWith('--')) {
+      const rec = ensureDef(defs, decl.prop);
+      // Last write wins — matches the browser's cascade.
+      rec.value = decl.value;
+      rec.selectors.add(rule.selectorText);
+    }
+
+    VAR_REF_REGEX.lastIndex = 0;
+    let match: RegExpExecArray | null;
+    while ((match = VAR_REF_REGEX.exec(decl.value)) !== null) {
+      const refName = match.at(1);
+      if (typeof refName !== 'string') {
+        continue;
+      }
+      if (!decl.prop.startsWith('--')) {
+        ensureDef(defs, refName).consumers.add(decl.prop);
+      }
+    }
+  }
+}
+
+// Walks a rule list, descending into grouping rules (@media/@supports/@layer/
+// @container and CSS-nesting) and following @import, so variables nested inside
+// them are not missed. Keyframes/@font-face fall through and are skipped.
+function walkRules(rules: CSSRuleList, defs: Map<string, DefRecord>): void {
+  for (const rule of rules) {
+    if (rule instanceof CSSStyleRule) {
+      collectFromStyleRule(rule, defs);
+      if (rule instanceof CSSGroupingRule) {
+        walkRules(rule.cssRules, defs);
+      }
+    } else if (rule instanceof CSSImportRule) {
+      if (rule.styleSheet !== null) {
+        collectFromSheet(rule.styleSheet, defs);
+      }
+    } else if (rule instanceof CSSGroupingRule) {
+      walkRules(rule.cssRules, defs);
+    }
+  }
+}
+
+// Reads one stylesheet defensively: skips disabled sheets and isolates the
+// cross-origin SecurityError / still-loading null, so a single unreadable
+// sheet can't abort scraping of all the others.
+function collectFromSheet(sheet: CSSStyleSheet, defs: Map<string, DefRecord>): void {
+  if (sheet.disabled) {
+    return;
+  }
+  let rules: CSSRuleList | null = null;
+  try {
+    rules = sheet.cssRules;
+  } catch {
+    // Cross-origin (fonts/CDN/widget) or otherwise unreadable — skip this one only.
+    return;
+  }
+  if (rules === null) {
+    return;
+  }
+  walkRules(rules, defs);
+}
+
 // Builds the variable list for one host.
 function scrapeHost(rootElement: DocumentLike): ScrapedHost {
   const defs = new Map<string, DefRecord>();
 
-  try {
-    for (const sheet of rootElement.styleSheets) {
-      for (const rule of sheet.cssRules) {
-        if (!(rule instanceof CSSStyleRule)) {
-          continue;
-        }
-        for (const decl of parseDeclarations(rule.style.cssText)) {
-          if (decl.prop.startsWith('--')) {
-            const rec = ensureDef(defs, decl.prop);
-            // Last write wins — matches the browser's cascade.
-            rec.value = decl.value;
-            rec.selectors.add(rule.selectorText);
-          }
-
-          VAR_REF_REGEX.lastIndex = 0;
-          let match: RegExpExecArray | null;
-          while ((match = VAR_REF_REGEX.exec(decl.value)) !== null) {
-            const refName = match[1];
-            if (!decl.prop.startsWith('--')) {
-              ensureDef(defs, refName).consumers.add(decl.prop);
-            }
-          }
-        }
-      }
-    }
-  } catch (error) {
-    console.error('🕸️ Weaver: Error scraping CSS variables:', error);
+  for (const sheet of collectStyleSheets(rootElement)) {
+    collectFromSheet(sheet, defs);
   }
 
   const computedSource = resolveComputedSource(rootElement);
