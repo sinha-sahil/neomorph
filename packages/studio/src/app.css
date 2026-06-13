@@ -6,35 +6,35 @@
 *,
 *::before,
 *::after {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 html,
 body {
-	margin: 0;
-	padding: 0;
-	height: 100%;
-	overflow: hidden;
-	font-family:
-		'Inter',
-		system-ui,
-		-apple-system,
-		sans-serif;
-	font-feature-settings: 'cv11', 'ss01';
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	text-rendering: optimizeLegibility;
-	background: var(--bg-app);
-	color: var(--text);
-	font-size: 13px;
-	line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-feature-settings: 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  background: var(--bg-app);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 button {
-	font: inherit;
+  font: inherit;
 }
 
 ::selection {
-	background: var(--accent-soft);
-	color: var(--text);
+  background: var(--accent-soft);
+  color: var(--text);
 }

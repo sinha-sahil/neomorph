@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> **Read this first:** [`docs/CODE_GUIDELINES.md`](docs/CODE_GUIDELINES.md) defines the house TypeScript / Svelte style. Every change must follow it — in particular:
+> no `as` type assertions, no `undefined` keyword (use `null`), no `!!`, no falsy/truthy checks on non-booleans (use `typeof`), no bracket-index access on arrays/strings (use `.at()` / `.charAt()`), no raw `<button>` for generic actions (use the `Button` component), and curly braces on every control statement.
+> The ESLint config at the repo root enforces most of these mechanically.
+
 ## Project Overview
 
 Neomorph is an advanced theme transformation toolkit that enables developers to add sophisticated theme customization capabilities to web applications. The project consists of three main packages working together to provide a complete theme transformation solution based on CSS custom properties.
@@ -19,9 +23,10 @@ Neomorph is an advanced theme transformation toolkit that enables developers to 
 
 This is a monorepo with three distinct packages:
 
-### 1. Loomer (`/packages/loomer`) - Theme Designer UI
+### 1. Studio (`/packages/studio`) - Theme Designer UI
 - **Technology:** SvelteKit static application
-- **Purpose:** Visual interface for creating and editing themes
+- **Purpose:** Visual interface for creating and editing themes — built on top of the SDK
+- **Note:** "Studio" is the app. The SDK's `Loomer` class is the headless API it is built with — distinct things.
 - **Key Features:**
   - Color picker with accessibility validation
   - Typography controls
@@ -69,12 +74,12 @@ pnpm build:all
 pnpm dev
 
 # Build specific packages
-pnpm build:loomer     # Build Loomer only
+pnpm build:studio     # Build Studio only
 pnpm build:weaver     # Build Weaver only  
 pnpm build:sdk        # Build SDK only
 
 # Start development for specific packages
-pnpm dev:loomer       # Start Loomer dev server
+pnpm dev:studio       # Start Studio dev server
 pnpm dev:weaver       # Start Weaver dev server
 pnpm dev:sdk          # Start SDK dev server
 
@@ -88,9 +93,9 @@ pnpm clean            # Clean build artifacts across all packages
 ### Individual Package Commands
 If you need to work within a specific package:
 
-### Loomer (Theme Designer)
+### Studio (Theme Designer)
 ```bash
-cd packages/loomer
+cd packages/studio
 pnpm dev          # Start development server
 pnpm build        # Build for production
 pnpm preview      # Preview build
@@ -141,16 +146,20 @@ pnpm test         # Run test suite (mentioned in development workflow)
 - **Dependencies:** Uses `type-decoder` for runtime type validation
 
 ### Weaver Architecture
-- **Entry Point:** `packages/weaver/src/index.ts` - Initializes the weaver and sets up DOM ready handling
-- **Core Logic:** `packages/weaver/src/core.ts` - Handles PostMessage communication and SDK payload processing
-- **Scraping:** `packages/weaver/src/scraper.ts` - CSS variable detection and mutation observation
-- **Types:** `packages/weaver/src/types.ts` - TypeScript definitions for communication protocols
+Weaver's `src/` is 7 flat files, one per concern:
+- **`index.ts`** - Entry point: DOM-ready bootstrap, init, persisted-theme restore
+- **`types.ts`** - All named types
+- **`state.ts`** - Runtime config singleton + the `isApplying` flag
+- **`scraper.ts`** - Host detection, CSS variable scraping, debounced mutation observer
+- **`applier.ts`** - Apply / clear CSS variable overrides (document + shadow DOM)
+- **`storage.ts`** - localStorage theme save/load/clear
+- **`messaging.ts`** - PostMessage decoders, listener, handler dispatch, teardown
 
 ### Communication Protocol
 Weaver uses PostMessage API for cross-origin communication:
 - **Message Format:** JSON with `source: 'skinweaver'` identifier
 - **Payload Structure:** Contains `requestId`, `service`, and action-specific payloads
-- **Actions:** Currently supports `listenCssVariables` action for CSS variable scraping
+- **Actions:** `listenCssVariables`, `applyCssVariables`, `clearTheme`, `configure`, `teardown`
 
 ### CSS Variable Detection
 - Detects variables starting with `--` or containing `var(--`
@@ -165,11 +174,11 @@ Weaver uses PostMessage API for cross-origin communication:
 - TypeScript is configured for strict type checking
 - ESLint and Prettier are configured for code quality
 - Rollup is used for building the weaver and SDK packages with CORS-enabled dev server
-- SvelteKit handles the loomer application build process
+- SvelteKit handles the studio application build process
 
 ### Turborepo Configuration
 - **Build Caching:** Automatic caching of build outputs for faster subsequent builds
-- **Task Dependencies:** Builds respect package dependency order (SDK → Weaver/Loomer)
+- **Task Dependencies:** Builds respect package dependency order (SDK → Weaver/Studio)
 - **Parallel Execution:** Tasks run in parallel when possible for optimal performance
 - **Selective Builds:** Use filters (`--filter=package-name`) to build specific packages
 
@@ -192,13 +201,15 @@ Weaver uses PostMessage API for cross-origin communication:
 Based on PROGRESS.md, the project is approximately 45% complete:
 - **SDK package:** Core implementation complete with types, classes, and build setup (60% complete)
 - **Weaver package:** Has comprehensive structure and communication framework implemented (75% complete)
-- **Loomer:** Has SvelteKit setup complete (25% complete)
+- **Studio:** Has SvelteKit setup complete (25% complete)
 - **Timeline:** Q3-Q4 2025 target
 - **Phase 1 Focus:** Foundation & Core SDK development (60% complete)
 
 ### Key Naming Changes
 - Original "Injector" renamed to "Weaver"
-- Original "Designer" renamed to "Loomer"
+- Original "Designer" renamed to "Loomer", then the **package** renamed to "Studio"
+- `Loomer` now refers **only** to the SDK class (the headless designer-side controller).
+  The designer **app** is `@neomorph/studio`.
 
 ### Known Potential Blockers
 1. **Browser Compatibility:** CSS custom property support across target browsers

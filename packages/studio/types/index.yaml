@@ -1,0 +1,137 @@
+info:
+  version: '1.0.0'
+  title: 'Neomorph Studio Types'
+
+types:
+  CssVariableKind:
+    type: string
+    enum:
+      - color
+      - spacing
+      - dimension
+      - font-size
+      - font-family
+      - font-weight
+      - line-height
+      - radius
+      - border-width
+      - shadow
+      - duration
+      - z-index
+      - opacity
+      - number
+      - length
+      - alias
+      - unknown
+
+  DefinedVariable:
+    type: object
+    required:
+      - name
+      - value
+      - resolvedValue
+      - definedIn
+      - consumedBy
+      - kind
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+      resolvedValue:
+        type: string
+      definedIn:
+        type: array
+        items:
+          type: string
+      consumedBy:
+        type: array
+        items:
+          type: string
+      kind:
+        $ref: '#/types/CssVariableKind'
+
+  ScrapedHost:
+    type: object
+    required:
+      - variables
+    properties:
+      variables:
+        type: array
+        items:
+          $ref: '#/types/DefinedVariable'
+
+  ScrapedResult:
+    type: object
+    additionalProperties:
+      keyType: string
+      valueType:
+        $ref: '#/types/ScrapedHost'
+
+  ElementRect:
+    type: object
+    required:
+      - top
+      - left
+      - width
+      - height
+    properties:
+      top:
+        type: number
+      left:
+        type: number
+      width:
+        type: number
+      height:
+        type: number
+
+  RelevantVariable:
+    type: object
+    required:
+      - varName
+      - property
+      - resolvedValue
+    properties:
+      varName:
+        type: string
+      property:
+        type: string
+      resolvedValue:
+        type: string
+
+  SelectedElement:
+    type: object
+    required:
+      - elementId
+      - tagName
+      - id
+      - classNames
+      - rect
+      - hostName
+      - computedStyles
+      - relevantVariables
+    properties:
+      elementId:
+        type: string
+      tagName:
+        type: string
+      id:
+        type: string
+      classNames:
+        type: array
+        items:
+          type: string
+      rect:
+        $ref: '#/types/ElementRect'
+      hostName:
+        type: string
+      computedStyles:
+        type: object
+        additionalProperties:
+          keyType: string
+          valueType:
+            type: string
+      relevantVariables:
+        type: array
+        items:
+          $ref: '#/types/RelevantVariable'
