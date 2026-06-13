@@ -3,9 +3,6 @@ name: Release and Deploy
 on:
   push:
     branches: [release]
-  pull_request:
-    branches: [release]
-    types: [closed]
 
 jobs:
   detect-changes:
@@ -152,7 +149,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No version changes to commit"
           else
-            git commit -m "chore: bump package versions" -m "${{ steps.commit-info.outputs.message }}"
+            git commit -m "chore: bump package versions [skip ci]" -m "${{ steps.commit-info.outputs.message }}"
             git push origin release
           fi
 
