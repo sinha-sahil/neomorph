@@ -1,7 +1,7 @@
 {
   "name": "@neomorph/weaver",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Integration script for Neomorph - Enables cross-origin communication and CSS variable transformation",
   "main": "index.js",
   "scripts": {
