@@ -105,6 +105,9 @@ importers:
       '@neomorph/sdk':
         specifier: workspace:*
         version: link:../sdk
+      type-decoder:
+        specifier: ^2.3.1
+        version: 2.3.1
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.5
@@ -136,6 +139,9 @@ importers:
       eslint-plugin-svelte:
         specifier: ^3.0.0
         version: 3.12.4(eslint@9.36.0)(svelte@5.39.3)
+      eslint-plugin-unused-imports:
+        specifier: ^4.1.4
+        version: 4.4.1(@typescript-eslint/eslint-plugin@8.58.2(@typescript-eslint/parser@8.58.2(eslint@9.36.0)(typescript@5.9.2))(eslint@9.36.0)(typescript@5.9.2))(eslint@9.36.0)
       globals:
         specifier: ^16.0.0
         version: 16.4.0
@@ -151,6 +157,9 @@ importers:
       svelte-check:
         specifier: ^4.0.0
         version: 4.3.1(picomatch@4.0.3)(svelte@5.39.3)(typescript@5.9.2)
+      type-crafter:
+        specifier: ^0.16.1
+        version: 0.16.1
       typescript:
         specifier: ^5.0.0
         version: 5.9.2
@@ -1655,6 +1664,10 @@ packages:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
 
+  type-crafter@0.16.1:
+    resolution: {integrity: sha512-bEuHV+IJI9aRmR6oopu/oA2gRF/wFooBEi44sAtVl21HKT5KIf9qROfFuBGLvtEumPRxhTG3i1it1N49Xuu6Gw==}
+    hasBin: true
+
   type-decoder@2.3.1:
     resolution: {integrity: sha512-jUtajc6jOzAvyabhi9o81GU1lq3UsvevMbV3zBv1RDI+PkOe6QrSJS/iVPYVW0yT32t6jJdfDppuTpYdQprC6Q==}
 
@@ -3145,6 +3158,8 @@ snapshots:
   type-check@0.4.0:
     dependencies:
       prelude-ls: 1.2.1
+
+  type-crafter@0.16.1: {}
 
   type-decoder@2.3.1: {}
 

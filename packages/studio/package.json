@@ -1,51 +1,57 @@
 {
-	"name": "@neomorph/studio",
-	"private": true,
-	"version": "0.0.1",
-	"type": "module",
-	"description": "Neomorph Studio - Visual theme designer for editing a target application's CSS variables in real time",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/sinha-sahil/neomorph.git",
-		"directory": "packages/studio"
-	},
-	"homepage": "https://github.com/sinha-sahil/neomorph#readme",
-	"bugs": {
-		"url": "https://github.com/sinha-sahil/neomorph/issues"
-	},
-	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"format": "prettier --write .",
-		"lint": "prettier --check . && eslint .",
-		"clean": "rm -rf .svelte-kit dist"
-	},
-	"dependencies": {
-		"@juspay/svelte-ui-components": "^2.19.2",
-		"@neomorph/sdk": "workspace:*"
-	},
-	"devDependencies": {
-		"@eslint/compat": "^1.2.5",
-		"@eslint/js": "^9.18.0",
-		"@sveltejs/adapter-auto": "^6.0.0",
-		"@sveltejs/adapter-vercel": "^6.3.3",
-		"@sveltejs/kit": "^2.22.0",
-		"@sveltejs/vite-plugin-svelte": "^6.0.0",
-		"@types/node": "^24.5.2",
-		"eslint": "^9.18.0",
-		"eslint-config-prettier": "^10.0.1",
-		"eslint-plugin-svelte": "^3.0.0",
-		"globals": "^16.0.0",
-		"prettier": "^3.4.2",
-		"prettier-plugin-svelte": "^3.3.3",
-		"svelte": "^5.0.0",
-		"svelte-check": "^4.0.0",
-		"typescript": "^5.0.0",
-		"typescript-eslint": "^8.20.0",
-		"vite": "^7.0.4"
-	}
+  "name": "@neomorph/studio",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Neomorph Studio - Visual theme designer for editing a target application's CSS variables in real time",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sinha-sahil/neomorph.git",
+    "directory": "packages/studio"
+  },
+  "homepage": "https://github.com/sinha-sahil/neomorph#readme",
+  "bugs": {
+    "url": "https://github.com/sinha-sahil/neomorph/issues"
+  },
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prepare": "svelte-kit sync || echo ''",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "format": "prettier --write .",
+    "lint": "prettier --check . && eslint .",
+    "generate:types": "type-crafter generate typescript-with-decoders ./types/index.yaml ./src/generated/types SingleFile SingleFile && pnpm run lint:fix:generated && pnpm run format:generated",
+    "lint:fix:generated": "eslint './src/generated/**/*.{js,ts}' --fix",
+    "format:generated": "prettier --write ./src/generated/*",
+    "clean": "rm -rf .svelte-kit dist"
+  },
+  "dependencies": {
+    "@juspay/svelte-ui-components": "^2.19.2",
+    "@neomorph/sdk": "workspace:*",
+    "type-decoder": "^2.3.1"
+  },
+  "devDependencies": {
+    "@eslint/compat": "^1.2.5",
+    "@eslint/js": "^9.18.0",
+    "@sveltejs/adapter-auto": "^6.0.0",
+    "@sveltejs/adapter-vercel": "^6.3.3",
+    "@sveltejs/kit": "^2.22.0",
+    "@sveltejs/vite-plugin-svelte": "^6.0.0",
+    "@types/node": "^24.5.2",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-svelte": "^3.0.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "globals": "^16.0.0",
+    "prettier": "^3.4.2",
+    "prettier-plugin-svelte": "^3.3.3",
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.0.0",
+    "type-crafter": "^0.16.1",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.20.0",
+    "vite": "^7.0.4"
+  }
 }

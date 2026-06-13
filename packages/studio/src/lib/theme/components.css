@@ -8,280 +8,516 @@
 /* ----- Toolbar (top bar) ----------------------------------------------- */
 
 .toolbar-app {
-	--toolbar-position: relative;
-	--toolbar-height: fit-content;
-	--toolbar-padding: 7px 0;
-	--toolbar-content-padding: 0;
-	--toolbar-background: var(--bg-topbar);
-	--toolbar-box-shadow: inset 0 -1px 0 var(--border);
-	flex-shrink: 0;
+  --toolbar-position: relative;
+  --toolbar-height: fit-content;
+  --toolbar-padding: 7px 0;
+  --toolbar-content-padding: 0;
+  --toolbar-background: var(--bg-topbar);
+  --toolbar-box-shadow: inset 0 -1px 0 var(--border);
+  flex-shrink: 0;
 }
 
 /* ----- Buttons --------------------------------------------------------- */
 
 .btn-primary {
-	--button-color: var(--accent);
-	--button-hover-color: var(--accent-strong);
-	--button-text-color: #ffffff;
-	--button-padding: 5px 12px;
-	--button-border-radius: 6px;
-	--button-font-size: 12px;
-	--button-font-weight: 600;
-	--button-height: 28px;
-	--button-border: none;
+  --button-color: var(--accent);
+  --button-hover-color: var(--accent-strong);
+  --button-text-color: #ffffff;
+  --button-padding: 5px 12px;
+  --button-border-radius: 6px;
+  --button-font-size: 12px;
+  --button-font-weight: 600;
+  --button-height: 28px;
+  --button-border: none;
 }
 
 .btn-icon {
-	--button-color: transparent;
-	--button-hover-color: var(--bg-row-hover);
-	--button-text-color: var(--text-muted);
-	--button-padding: 0;
-	--button-border-radius: 6px;
-	--button-content-gap: 0;
-	--button-height: 28px;
-	--button-width: 28px;
-	--button-border: none;
+  --button-color: transparent;
+  --button-hover-color: var(--bg-row-hover);
+  --button-text-color: var(--text-muted);
+  --button-padding: 0;
+  --button-border-radius: 6px;
+  --button-content-gap: 0;
+  --button-height: 28px;
+  --button-width: 28px;
+  --button-border: none;
 }
 
 .btn-icon button:hover {
-	color: var(--text);
+  color: var(--text);
 }
 
 .btn-ghost {
-	--button-color: transparent;
-	--button-hover-color: var(--bg-row-hover);
-	--button-text-color: var(--text-muted);
-	--button-padding: 4px 10px;
-	--button-border-radius: 6px;
-	--button-font-size: 12px;
-	--button-font-weight: 500;
-	--button-height: 26px;
-	--button-border: none;
+  --button-color: transparent;
+  --button-hover-color: var(--bg-row-hover);
+  --button-text-color: var(--text-muted);
+  --button-padding: 4px 10px;
+  --button-border-radius: 6px;
+  --button-font-size: 12px;
+  --button-font-weight: 500;
+  --button-height: 26px;
+  --button-border: none;
+}
+
+/* Secondary action button: bordered, full-contrast label (e.g. modal "Copy"). */
+.btn-secondary {
+  --button-color: var(--bg-mute);
+  --button-hover-color: var(--bg-row-hover);
+  --button-text-color: var(--text);
+  --button-padding: 5px 12px;
+  --button-border-radius: 6px;
+  --button-font-size: 12px;
+  --button-font-weight: 600;
+  --button-height: 28px;
+  --button-content-gap: 0;
+  --button-border: 1px solid var(--border-strong);
+}
+
+/* Tool-rail icon buttons (32x32 transparent, accent when active). */
+.rail-btn {
+  --button-color: transparent;
+  --button-hover-color: var(--bg-mute);
+  --button-text-color: var(--text-muted);
+  --button-padding: 0;
+  --button-border-radius: 6px;
+  --button-content-gap: 0;
+  --button-height: 32px;
+  --button-width: 32px;
+  --button-border: none;
+}
+
+.rail-btn button:hover {
+  color: var(--text);
+}
+
+.rail-btn-active {
+  --button-color: var(--accent-soft);
+  --button-hover-color: var(--accent-soft);
+  --button-text-color: var(--accent);
+}
+
+/* Zoom-percentage readout in the top bar / its own control. */
+.zoom-readout {
+  --button-color: transparent;
+  --button-hover-color: var(--bg-mute);
+  --button-text-color: var(--text-muted);
+  --button-padding: 0 8px;
+  --button-border-radius: 6px;
+  --button-font-size: 12px;
+  --button-font-weight: 500;
+  --button-height: 26px;
+  --button-border: none;
+  font-family: var(--font-mono);
+}
+
+/* Theme switcher (light / dark / system segmented control). */
+.theme-switch {
+  --theme-switcher-segment-gap: 2px;
+  --theme-switcher-segment-padding: 2px;
+  --theme-switcher-segment-button-padding: 4px 8px;
+  --theme-switcher-segment-border-radius: 5px;
+  --theme-switcher-border-radius: 7px;
+  --theme-switcher-segment-bg: var(--bg-mute);
+  --theme-switcher-segment-active-bg: var(--bg-panel);
+  --theme-switcher-segment-shadow: var(--shadow-elevated);
+  --theme-switcher-icon-size: 15px;
+  --theme-switcher-icon-color: var(--text-muted);
+  --theme-switcher-icon-color-active: var(--accent);
 }
 
 /* ----- Inputs ---------------------------------------------------------- */
 
 .input-url {
-	--input-padding: 0 12px;
-	--input-margin: 0;
-	--input-box-shadow: none;
-	--input-border: 1px solid var(--border);
-	--input-focus-border: 1px solid var(--accent);
-	--input-background: var(--bg-mute);
-	--input-text-color: var(--text);
-	--input-placeholder-color: var(--text-faint);
-	--input-font-size: 12px;
-	--input-font-family: var(--font-mono);
-	--input-radius: 6px;
-	--input-width: 100%;
-	--input-container-width: 100%;
-	--input-height: 30px;
+  --input-padding: 0 12px;
+  --input-margin: 0;
+  --input-box-shadow: none;
+  --input-border: 1px solid var(--border);
+  --input-focus-border: 1px solid var(--accent);
+  --input-background: var(--bg-mute);
+  --input-text-color: var(--text);
+  --input-placeholder-color: var(--text-faint);
+  --input-font-size: 12px;
+  --input-font-family: var(--font-mono);
+  --input-radius: 6px;
+  --input-width: 100%;
+  --input-container-width: 100%;
+  --input-height: 30px;
 }
 
 .input-token {
-	--input-padding: 0 8px;
-	--input-margin: 0;
-	--input-box-shadow: none;
-	--input-border: 1px solid transparent;
-	--input-focus-border: 1px solid var(--accent);
-	--input-font-size: 11px;
-	--input-font-family: var(--font-mono);
-	--input-font-weight: 500;
-	--input-text-color: var(--text);
-	--input-background: transparent;
-	--input-placeholder-color: var(--text-faint);
-	--input-text-align: right;
-	--input-radius: 5px;
-	--input-width: 100%;
-	--input-container-width: 100%;
-	--input-height: 24px;
+  --input-padding: 0 8px;
+  --input-margin: 0;
+  --input-box-shadow: none;
+  --input-border: 1px solid transparent;
+  --input-focus-border: 1px solid var(--accent);
+  --input-font-size: 11px;
+  --input-font-family: var(--font-mono);
+  --input-font-weight: 500;
+  --input-text-color: var(--text);
+  --input-background: transparent;
+  --input-placeholder-color: var(--text-faint);
+  --input-text-align: right;
+  --input-radius: 5px;
+  --input-width: 100%;
+  --input-container-width: 100%;
+  --input-height: 24px;
 }
 
 .input-token:hover {
-	--input-border: 1px solid var(--border);
-	--input-background: var(--bg-mute);
+  --input-border: 1px solid var(--border);
+  --input-background: var(--bg-mute);
 }
 
 .input-token:focus-within {
-	--input-background: var(--bg-mute);
+  --input-background: var(--bg-mute);
 }
 
 .input-search {
-	--input-padding: 0 12px 0 30px;
-	--input-margin: 0;
-	--input-box-shadow: none;
-	--input-border: 1px solid var(--border);
-	--input-focus-border: 1px solid var(--accent);
-	--input-font-size: 12px;
-	--input-font-weight: 400;
-	--input-text-color: var(--text);
-	--input-placeholder-color: var(--text-muted);
-	--input-background: var(--bg-mute);
-	--input-radius: 6px;
-	--input-width: 100%;
-	--input-container-width: 100%;
-	--input-height: 28px;
+  --input-padding: 0 12px 0 30px;
+  --input-margin: 0;
+  --input-box-shadow: none;
+  --input-border: 1px solid var(--border);
+  --input-focus-border: 1px solid var(--accent);
+  --input-font-size: 12px;
+  --input-font-weight: 400;
+  --input-text-color: var(--text);
+  --input-placeholder-color: var(--text-muted);
+  --input-background: var(--bg-mute);
+  --input-radius: 6px;
+  --input-width: 100%;
+  --input-container-width: 100%;
+  --input-height: 28px;
 }
 
 /* ----- ColorPicker (swatch-only variant) ------------------------------ */
 
 .colorpicker-swatch {
-	--color-picker-width: 16px;
-	--color-picker-swatch-size: 16px;
-	--color-picker-swatch-padding: 0;
-	--color-picker-swatch-btn-background: transparent;
-	--color-picker-swatch-btn-border: 0;
-	--color-picker-swatch-btn-padding: 0;
-	--color-picker-swatch-btn-border-radius: 4px;
-	--color-picker-swatch-btn-hover-background: var(--bg-row-hover);
-	--color-picker-swatch-border-radius: 4px;
-	--color-picker-swatch-inner-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.16);
-	--color-picker-row-gap: 0;
-	--color-picker-popover-z-index: 100;
-	--color-picker-popover-background: var(--bg-elevated);
-	--color-picker-popover-border: 1px solid var(--border);
-	--color-picker-popover-shadow: var(--shadow-popover);
+  --color-picker-width: 16px;
+  --color-picker-swatch-size: 16px;
+  --color-picker-swatch-padding: 0;
+  --color-picker-swatch-btn-background: transparent;
+  --color-picker-swatch-btn-border: 0;
+  --color-picker-swatch-btn-padding: 0;
+  --color-picker-swatch-btn-border-radius: 4px;
+  --color-picker-swatch-btn-hover-background: var(--bg-row-hover);
+  --color-picker-swatch-border-radius: 4px;
+  --color-picker-swatch-inner-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.16);
+  --color-picker-row-gap: 0;
+  --color-picker-popover-z-index: 100;
+  --color-picker-popover-background: var(--bg-elevated);
+  --color-picker-popover-border: 1px solid var(--border);
+  --color-picker-popover-shadow: var(--shadow-popover);
 }
 
 /* ----- Slider --------------------------------------------------------- */
 
 .slider-compact {
-	--slider-container-padding: 0;
-	--slider-thumb-size: 12px;
-	--slider-track-height: 3px;
-	--slider-track-background: var(--border);
-	--slider-track-active-color: var(--accent);
-	--slider-thumb-background: var(--bg-panel);
-	--slider-thumb-border: 1px solid var(--border-strong);
-	--slider-thumb-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
-	--slider-focus-ring: 2px solid var(--accent-soft);
-	--slider-value-font-size: 11px;
-	--slider-value-font-family: var(--font-mono);
-	--slider-value-color: var(--text);
-	--slider-value-font-weight: 500;
+  --slider-container-padding: 0;
+  --slider-thumb-size: 12px;
+  --slider-track-height: 3px;
+  --slider-track-background: var(--border);
+  --slider-track-active-color: var(--accent);
+  --slider-thumb-background: var(--bg-panel);
+  --slider-thumb-border: 1px solid var(--border-strong);
+  --slider-thumb-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  --slider-focus-ring: 2px solid var(--accent-soft);
+  --slider-value-font-size: 11px;
+  --slider-value-font-family: var(--font-mono);
+  --slider-value-color: var(--text);
+  --slider-value-font-weight: 500;
 }
 
 /* ----- Select (scope picker) ----------------------------------------- */
 
 .select-scope {
-	--select-width: 100%;
-	--select-font-size: 12px;
-	--select-color: var(--text);
-	--select-trigger-min-height: 28px;
-	--select-trigger-padding: 4px 10px;
-	--select-trigger-gap: 6px;
-	--select-trigger-background: var(--bg-mute);
-	--select-trigger-border: 1px solid var(--border);
-	--select-trigger-border-radius: 6px;
-	--select-trigger-hover-border-color: var(--border-strong);
-	--select-trigger-focus-border-color: var(--accent);
-	--select-trigger-focus-shadow: 0 0 0 2px var(--accent-soft);
-	--select-arrow-size: 12px;
-	--select-arrow-color: var(--text-faint);
-	--select-placeholder-color: var(--text-faint);
-	--select-dropdown-background: var(--bg-elevated);
-	--select-dropdown-border: 1px solid var(--border);
-	--select-dropdown-border-radius: 6px;
-	--select-dropdown-shadow: var(--shadow-popover);
-	--select-option-padding: 6px 10px;
-	--select-option-color: var(--text);
-	--select-option-font-size: 12px;
-	--select-option-hover-background: var(--bg-row-hover);
-	--select-option-selected-background: var(--accent-soft);
-	font-family: var(--font-mono);
-	flex: 1;
+  --select-width: 100%;
+  --select-font-size: 12px;
+  --select-color: var(--text);
+  --select-trigger-min-height: 28px;
+  --select-trigger-padding: 4px 10px;
+  --select-trigger-gap: 6px;
+  --select-trigger-background: var(--bg-mute);
+  --select-trigger-border: 1px solid var(--border);
+  --select-trigger-border-radius: 6px;
+  --select-trigger-hover-border-color: var(--border-strong);
+  --select-trigger-focus-border-color: var(--accent);
+  --select-trigger-focus-shadow: 0 0 0 2px var(--accent-soft);
+  --select-arrow-size: 12px;
+  --select-arrow-color: var(--text-faint);
+  --select-placeholder-color: var(--text-faint);
+  --select-dropdown-background: var(--bg-elevated);
+  --select-dropdown-border: 1px solid var(--border);
+  --select-dropdown-border-radius: 6px;
+  --select-dropdown-shadow: var(--shadow-popover);
+  --select-option-padding: 6px 10px;
+  --select-option-color: var(--text);
+  --select-option-font-size: 12px;
+  --select-option-hover-background: var(--bg-row-hover);
+  --select-option-selected-background: var(--accent-soft);
+  font-family: var(--font-mono);
+  flex: 1;
 }
 
 /* ----- Browser chrome ------------------------------------------------- */
 
 .browser-flat {
-	--browser-width: 100%;
-	--browser-content-min-height: 0;
-	--browser-border: 1px solid var(--border);
-	--browser-shadow: var(--shadow-elevated);
-	--browser-border-radius: 10px;
-	--browser-chrome-bg: var(--bg-panel);
-	--browser-titlebar-padding: 10px 14px 8px;
-	--browser-addressbar-padding: 4px 14px 10px;
-	--browser-addressbar-bg: var(--bg-mute);
-	--browser-addressbar-border: 1px solid var(--border);
-	--browser-dot-size: 11px;
-	--browser-dot-gap: 7px;
-	--browser-addressbar-height: 26px;
-	--browser-addressbar-font-size: 12px;
-	--browser-addressbar-color: var(--text);
-	flex: 1;
-	min-height: 0;
+  --browser-width: 100%;
+  --browser-content-min-height: 0;
+  --browser-border: 1px solid var(--border);
+  --browser-shadow: var(--shadow-elevated);
+  --browser-border-radius: 10px;
+  --browser-chrome-bg: var(--bg-panel);
+  --browser-titlebar-padding: 10px 14px 8px;
+  --browser-addressbar-padding: 4px 14px 10px;
+  --browser-addressbar-bg: var(--bg-mute);
+  --browser-addressbar-border: 1px solid var(--border);
+  --browser-dot-size: 11px;
+  --browser-dot-gap: 7px;
+  --browser-addressbar-height: 26px;
+  --browser-addressbar-font-size: 12px;
+  --browser-addressbar-color: var(--text);
+  flex: 1;
+  min-height: 0;
 }
 
 .browser-flat .dot {
-	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.14);
 }
 
 .browser-flat > .content {
-	flex: 1;
-	min-height: 0;
-	overflow: hidden;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* ----- Pill (kind glyph) --------------------------------------------- */
 
 .pill-kind {
-	--pill-padding: 0;
-	--pill-background: var(--pill-color-bg);
-	--pill-color: var(--pill-color-fg);
-	--pill-hover-background: var(--pill-color-bg);
-	--pill-hover-color: var(--pill-color-fg);
-	--pill-font-family: var(--font-mono);
-	--pill-font-size: 10px;
-	--pill-font-weight: 600;
-	--pill-border-radius: 4px;
-	--pill-cursor: default;
-	width: 16px;
-	height: 16px;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
+  --pill-padding: 0;
+  --pill-background: var(--pill-color-bg);
+  --pill-color: var(--pill-color-fg);
+  --pill-hover-background: var(--pill-color-bg);
+  --pill-hover-color: var(--pill-color-fg);
+  --pill-font-family: var(--font-mono);
+  --pill-font-size: 10px;
+  --pill-font-weight: 600;
+  --pill-border-radius: 4px;
+  --pill-cursor: default;
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pill-kind-typography {
-	--pill-background: var(--pill-typography-bg);
-	--pill-color: var(--pill-typography-fg);
-	--pill-hover-background: var(--pill-typography-bg);
-	--pill-hover-color: var(--pill-typography-fg);
+  --pill-background: var(--pill-typography-bg);
+  --pill-color: var(--pill-typography-fg);
+  --pill-hover-background: var(--pill-typography-bg);
+  --pill-hover-color: var(--pill-typography-fg);
 }
 
 .pill-kind-sizing {
-	--pill-background: var(--pill-sizing-bg);
-	--pill-color: var(--pill-sizing-fg);
-	--pill-hover-background: var(--pill-sizing-bg);
-	--pill-hover-color: var(--pill-sizing-fg);
+  --pill-background: var(--pill-sizing-bg);
+  --pill-color: var(--pill-sizing-fg);
+  --pill-hover-background: var(--pill-sizing-bg);
+  --pill-hover-color: var(--pill-sizing-fg);
 }
 
 .pill-kind-shadow {
-	--pill-background: var(--pill-shadow-bg);
-	--pill-color: var(--pill-shadow-fg);
-	--pill-hover-background: var(--pill-shadow-bg);
-	--pill-hover-color: var(--pill-shadow-fg);
+  --pill-background: var(--pill-shadow-bg);
+  --pill-color: var(--pill-shadow-fg);
+  --pill-hover-background: var(--pill-shadow-bg);
+  --pill-hover-color: var(--pill-shadow-fg);
 }
 
 .pill-kind-motion {
-	--pill-background: var(--pill-motion-bg);
-	--pill-color: var(--pill-motion-fg);
-	--pill-hover-background: var(--pill-motion-bg);
-	--pill-hover-color: var(--pill-motion-fg);
+  --pill-background: var(--pill-motion-bg);
+  --pill-color: var(--pill-motion-fg);
+  --pill-hover-background: var(--pill-motion-bg);
+  --pill-hover-color: var(--pill-motion-fg);
 }
 
 .pill-kind-numeric {
-	--pill-background: var(--pill-numeric-bg);
-	--pill-color: var(--pill-numeric-fg);
-	--pill-hover-background: var(--pill-numeric-bg);
-	--pill-hover-color: var(--pill-numeric-fg);
+  --pill-background: var(--pill-numeric-bg);
+  --pill-color: var(--pill-numeric-fg);
+  --pill-hover-background: var(--pill-numeric-bg);
+  --pill-hover-color: var(--pill-numeric-fg);
 }
 
 .pill-kind-alias {
-	--pill-background: var(--pill-alias-bg);
-	--pill-color: var(--pill-alias-fg);
-	--pill-hover-background: var(--pill-alias-bg);
-	--pill-hover-color: var(--pill-alias-fg);
+  --pill-background: var(--pill-alias-bg);
+  --pill-color: var(--pill-alias-fg);
+  --pill-hover-background: var(--pill-alias-bg);
+  --pill-hover-color: var(--pill-alias-fg);
+}
+
+/* Count chip (panel header / status bar token count). */
+.pill-count {
+  --pill-background: var(--bg-mute);
+  --pill-color: var(--text-muted);
+  --pill-hover-background: var(--bg-mute);
+  --pill-hover-color: var(--text-muted);
+  --pill-font-family: var(--font-mono);
+  --pill-font-size: 11px;
+  --pill-font-weight: 500;
+  --pill-padding: 1px 7px;
+  --pill-border-radius: 4px;
+  --pill-cursor: default;
+}
+
+/* Count chip, ghost variant (sticky group header). */
+.pill-count-soft {
+  --pill-background: transparent;
+  --pill-color: var(--text-faint);
+  --pill-hover-background: transparent;
+  --pill-hover-color: var(--text-faint);
+  --pill-font-family: var(--font-mono);
+  --pill-font-size: 10.5px;
+  --pill-font-weight: 500;
+  --pill-padding: 0;
+  --pill-border-radius: 4px;
+  --pill-cursor: default;
+}
+
+/* Subtitle stat chip (export modal "N tokens · M elements"). */
+.pill-stat {
+  --pill-background: transparent;
+  --pill-color: var(--text-muted);
+  --pill-hover-background: transparent;
+  --pill-hover-color: var(--text-muted);
+  --pill-font-size: 12px;
+  --pill-font-weight: 500;
+  --pill-padding: 0;
+  --pill-cursor: default;
+}
+
+/* ----- KeyboardInput (status-bar shortcut hints) --------------------- */
+
+.kbd-status {
+  --keyboard-input-gap: 3px;
+  --keyboard-input-font-family: var(--font-mono);
+  --keyboard-input-font-size: 10px;
+  --keyboard-input-cursor: default;
+  --keyboard-input-key-font-family: var(--font-mono);
+  --keyboard-input-key-font-weight: 500;
+  --keyboard-input-key-color: var(--text-faint);
+  --keyboard-input-key-background: var(--bg-mute);
+  --keyboard-input-key-border: 1px solid var(--border);
+  --keyboard-input-key-border-radius: 4px;
+  --keyboard-input-key-box-shadow: none;
+  --keyboard-input-key-min-width: 1.2em;
+  --keyboard-input-key-padding: 1px 4px;
+  --keyboard-input-separator-color: var(--text-faint);
+}
+
+/* ----- Tooltip (icon-button hints) ----------------------------------- */
+
+.tooltip-studio {
+  --tooltip-background: var(--bg-elevated);
+  --tooltip-color: var(--text);
+  --tooltip-font-size: 11px;
+  --tooltip-font-weight: 500;
+  --tooltip-padding: 5px 9px;
+  --tooltip-border-radius: 6px;
+  --tooltip-border: 1px solid var(--border);
+  --tooltip-box-shadow: var(--shadow-popover);
+  --tooltip-arrow-color: var(--bg-elevated);
+  --tooltip-offset: 8px;
+  --tooltip-max-width: 240px;
+}
+
+/* ----- Modal (CSS export dialog) ------------------------------------- */
+
+.export-modal {
+  --modal-content-background-color: var(--bg-panel);
+  --modal-border-radius: 12px;
+  --modal-content-overflow: hidden;
+  --background-color: color-mix(in srgb, #0a0e14 62%, transparent);
+}
+
+/* Empty-state Banner inside the export modal — contained, not a sticky strip. */
+.export-empty-banner {
+  --banner-position: static;
+  --banner-background: var(--bg-mute);
+  --banner-color: var(--text-muted);
+  --banner-icon-color: var(--text-faint);
+  --banner-font-size: 13px;
+  --banner-font-weight: 400;
+  --banner-line-height: 1.5;
+  --banner-justify-content: flex-start;
+  --banner-padding: 16px 18px;
+  --banner-cursor: default;
+  margin: 0 20px;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+}
+
+/* CSS export syntax highlighting (applied to {@html} output, so global). */
+.cm-comment {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.cm-selector {
+  color: #c026d3;
+}
+
+.cm-prop {
+  color: #2563eb;
+}
+
+.cm-value {
+  color: #0f766e;
+}
+
+[data-studio-theme='dark'] .cm-comment {
+  color: #8b95a5;
+}
+
+[data-studio-theme='dark'] .cm-selector {
+  color: #e879f9;
+}
+
+[data-studio-theme='dark'] .cm-prop {
+  color: #7aa2f7;
+}
+
+[data-studio-theme='dark'] .cm-value {
+  color: #5eead4;
+}
+
+/* ----- Img (icon glyphs) --------------------------------------------- *
+ * Icons are black SVG assets rendered via <Img>. An <img>-loaded SVG can't
+ * inherit `currentColor`, so we tint the black glyph with `--image-filter`:
+ * muted-dark on light themes, inverted to muted-light on dark (every surface —
+ * panels and floating pills alike — darkens to ~lum 19 in the dark theme).
+ * State (hover/active) is conveyed by the host Button's background. */
+.studio-icon {
+  --image-object-fit: contain;
+  --image-filter: opacity(0.62);
+}
+
+[data-studio-theme='dark'] .studio-icon {
+  --image-filter: invert(1) opacity(0.74);
+}
+
+.icon-xs {
+  --image-width: 12px;
+  --image-height: 12px;
+}
+
+.icon-sm {
+  --image-width: 14px;
+  --image-height: 14px;
+}
+
+.icon-md {
+  --image-width: 16px;
+  --image-height: 16px;
+}
+
+.icon-lg {
+  --image-width: 22px;
+  --image-height: 22px;
 }
